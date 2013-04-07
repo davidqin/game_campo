@@ -1,6 +1,9 @@
-require "sinatra"
+require 'sinatra'
+require 'haml'
 
-get "/" do
-  "This is a Game Center"
+set :public_folder, 'public'
+
+get '/' do
+  haml :index
 end
 
