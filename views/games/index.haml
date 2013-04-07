@@ -1,0 +1,37 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %title CSS3 Matching Game
+    %link{:href => "http://fonts.googleapis.com/css?family=Droid+Serif:regular,bold&subset=latin", :rel => "stylesheet", :type => "text/css"}/
+    %link{:href => "http://fonts.googleapis.com/css?family=Orbitron:400,700", :rel => "stylesheet", :type => "text/css"}/
+    %link{:href => "css/matchgame.css", :rel => "stylesheet"}/
+  %body
+    = link_to "asdf"
+    %header
+      %h1 CSS3 Matching Game
+    #timer
+      Elapsed time:
+      %span#elapsed-time 00:00
+    %section#game
+      #cards
+        .card
+          .face.front
+          .face.back
+        / .card
+      / #cards
+    / #game
+    %section#popup.hide
+      #popup-bg
+      #popup-box
+        #popup-box-content
+          %h1 You Won!
+          %p Your Score:
+          %p
+            %span.score 13
+          %p
+            %small
+              Last Score:
+              %span.last-score 20
+    %script{:src => "js/jquery-1.6.min.js"}
+    %script{:src => "js/html5games.matchgame.js"}
