@@ -4,6 +4,7 @@ require 'haml'
 require 'active_record'
 require 'sqlite3'
 require 'logger'
+
 require File.expand_path('../models/user', __FILE__)
 
 ActiveRecord::Base.logger = Logger.new('debug.log')
