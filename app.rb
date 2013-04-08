@@ -33,6 +33,11 @@ get '/account/login' do
   haml :'account/login'
 end
 
+post '/account/login' do
+  session[:user_id] = params[:username]
+  redirect "/games"
+end
+
 get '/account/register' do
   haml :'account/register'
 end

@@ -1,0 +1,14 @@
+.row
+  %form.form-horizontal.span7.offset2.mt30.box
+    .control-group
+      %label.control-label{:for => "inputEmail"} Email
+      .controls
+        %input#inputEmail{:placeholder => "Email", :type => "text"}/
+    .control-group
+      %label.control-label{:for => "inputPassword"} Password
+      .controls
+        %input#inputPassword{:placeholder => "Password", :type => "password"}/
+    .control-group
+      .form-actions
+        %button.btn.btn-primary{:type => "submit"} Save changes
+        %button.btn{:type => "button"} Cancel

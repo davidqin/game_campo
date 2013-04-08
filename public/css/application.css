@@ -1,0 +1,10 @@
+.mt30{margin-top: 30px;}
+.box{
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  padding: 20px;
+  background: white;
+}
