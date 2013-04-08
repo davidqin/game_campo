@@ -4,31 +4,56 @@
     %title Sinatra + Twitter Bootstrap
     %script{:src => "/js/jquery-1.9.1.min.js", :type => "text/javascript"}
     %script{:src => "/js/bootstrap/bootstrap.min.js"}
+    %script{:src => "/js/application.js"}
     %link{:href => "/css/bootstrap/bootstrap.min.css", :rel => "stylesheet"}/
     %link{:href => "/css/application.css", :rel => "stylesheet"}/
   %body{:style => "padding-top: 50px;"}
     .navbar.navbar-fixed-top
       .navbar-inner
         .container
-          %a.brand{:href => "#"}
-            Sinatra + Twitter Bootstrap
+          %a.brand{:href => "/"}
+            Code Games
           %ul.nav
-            %li
-              %a{:href => "/"} Home
-            %li
-              %a{:href => "/secure/place"} Secret
-          %ul.nav.pull-right
             %li.dropdown
-              %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-                Hello
-                / = username
+              %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
+                Card Games
                 %b.caret
               %ul.dropdown-menu
                 %li
-                  %a{:href => "/login/form"} Login
+                  %a 5-10-K
+                  %a Matching Game
+                  %a Hearts
+            %li.dropdown
+              %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
+                Chess Games
+                %b.caret
+              %ul.dropdown-menu
                 %li
-                  %a{:href => "/logout"} Logout
+                  %a Chess
+                  %a Chinese chess
+          %ul.nav.pull-right
+            %li.divider-vertical
+            - if not @current_user
+              %li{class: @request.path == "/account/login" ? "active" : nil}
+                = link_to "/account/login", "Sign In"
+              %li{class: @request.path == "/account/register" ? "active" : nil}
+                = link_to "/account/register", "Sign Up"
+            - else
+              %li.dropdown
+                %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                  %i.icon-user
+                  Account
+                  %b.caret
+                %ul.dropdown-menu
+                  %li
+                    %a{:href => "/login/form"} profile
+                  %li.divider
+                  %li
+                    %a{:href => "/logout"} Logout
     .container
-      - if @error then
-        .alert.alert-error= @error
+      - if @errors then
+        = show_errors
       = yield
+  .footer
+    %hr
+    just for fun

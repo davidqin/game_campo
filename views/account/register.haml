@@ -1,0 +1,21 @@
+.row
+  %form.form-horizontal.span7.offset2.mt30.box{:method => :post}
+    .control-group
+      %label.control-label{:for => "inputEmail"} Email
+      .controls
+        .input-append
+          %input#email{:style => "width: 179px;", :name => "user[email]", :placeholder => "Email", :type => "email", :value => @user.email}/
+          %span.add-on
+            %i.icon-envelope
+    .control-group
+      %label.control-label{:for => "inputPassword"} Password
+      .controls
+        %input#password{:name => "user[password]", :placeholder => "Password", :type => "password"}/
+    .control-group
+      %label.control-label{:for => "inputPassword"} Password Confirmation
+      .controls
+        %input#password_confirmation{:name => "user[password_confirmation]", :placeholder => "Password", :type => "password"}/
+    .control-group
+      .form-actions
+        %button.btn.btn-primary{:type => "submit"} Sign up
+        %a.btn{:href => "/account/login" } Sign in

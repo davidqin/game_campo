@@ -1,7 +1,7 @@
 require 'yaml'
 require 'logger'
 require 'active_record'
-require "pry"
+# require "pry"
 
 namespace :db do
 
