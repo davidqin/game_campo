@@ -34,6 +34,10 @@ get '/games' do
   haml :'/games/index'
 end
 
+get '/games/:game_type' do
+  haml :'/games/hall'
+end
+
 get '/account/login' do
   haml :'account/login'
 end

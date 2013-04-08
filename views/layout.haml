@@ -6,50 +6,56 @@
     %script{:src => "/js/bootstrap/bootstrap.min.js"}
     %script{:src => "/js/application.js"}
     %link{:href => "/css/bootstrap/bootstrap.min.css", :rel => "stylesheet"}/
+    %link{:href => "/css/bootstrap/bootstrap-responsive.min.css", :rel => "stylesheet"}/
     %link{:href => "/css/application.css", :rel => "stylesheet"}/
-  %body{:style => "padding-top: 50px;"}
+  %body
     .navbar.navbar-fixed-top
       .navbar-inner
         .container
+          %a.btn.btn-navbar{ "data-toggle" => "collapse", "data-target" => ".nav-collapse"}
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
           %a.brand{:href => "/"}
             Code Games
-          %ul.nav
-            %li.dropdown
-              %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
-                Card Games
-                %b.caret
-              %ul.dropdown-menu
-                %li
-                  %a 5-10-K
-                  %a Matching Game
-                  %a Hearts
-            %li.dropdown
-              %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
-                Chess Games
-                %b.caret
-              %ul.dropdown-menu
-                %li
-                  %a Chess
-                  %a Chinese chess
-          %ul.nav.pull-right
-            %li.divider-vertical
-            - if not @current_user
-              %li{class: @request.path == "/account/login" ? "active" : nil}
-                = link_to "/account/login", "Sign In"
-              %li{class: @request.path == "/account/register" ? "active" : nil}
-                = link_to "/account/register", "Sign Up"
-            - else
+          .nav-collapse.collapse
+            %ul.nav
               %li.dropdown
-                %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-                  %i.icon-user
-                  Account
+                %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
+                  Card Games
                   %b.caret
                 %ul.dropdown-menu
                   %li
-                    %a{:href => "/login/form"} profile
-                  %li.divider
+                    %a 5-10-K
+                    %a Matching Game
+                    %a Hearts
+              %li.dropdown
+                %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
+                  Chess Games
+                  %b.caret
+                %ul.dropdown-menu
                   %li
-                    %a{:href => "/logout"} Logout
+                    %a Chess
+                    %a Chinese chess
+            %ul.nav.pull-right
+              %li.divider-vertical
+              - if not @current_user
+                %li{class: @request.path == "/account/login" ? "active" : nil}
+                  = link_to "/account/login", "Sign In"
+                %li{class: @request.path == "/account/register" ? "active" : nil}
+                  = link_to "/account/register", "Sign Up"
+              - else
+                %li.dropdown
+                  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                    %i.icon-user
+                    Account
+                    %b.caret
+                  %ul.dropdown-menu
+                    %li
+                      %a{:href => "/login/form"} profile
+                    %li.divider
+                    %li
+                      %a{:href => "/logout"} Logout
     .container
       - if @errors then
         = show_errors
