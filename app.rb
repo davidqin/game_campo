@@ -4,8 +4,11 @@ require 'haml'
 require 'active_record'
 require 'sqlite3'
 require 'logger'
+require 'rack/coffee'
 
 require File.expand_path('../models/user', __FILE__)
+
+use Rack::Coffee, root: 'public', urls: '/js'
 
 ActiveRecord::Base.logger = Logger.new('debug.log')
 ActiveRecord::Base.configurations = YAML.load_file("./config/databases.yml")
@@ -36,6 +39,7 @@ get '/games' do
 end
 
 get '/games/:game_type' do
+  #@game_type = params[:game_type]
   haml :'/games/hall'
 end
 
