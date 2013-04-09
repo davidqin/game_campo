@@ -10,7 +10,7 @@ Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
 
 use Rack::Coffee, root: 'public', urls: '/js'
 
-ActiveRecord::Base.logger = Logger.new('debug.log')
+ActiveRecord::Base.logger = Logger.new('./log/debug.log')
 ActiveRecord::Base.configurations = YAML.load_file("./config/databases.yml")
 ActiveRecord::Base.establish_connection('development')
 

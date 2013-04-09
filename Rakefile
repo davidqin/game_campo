@@ -21,7 +21,7 @@ namespace :db do
 
   task :connection => :configuration do
     ActiveRecord::Base.establish_connection @config
-    ActiveRecord::Base.logger = Logger.new(File.open('database.log', 'a'))
+    ActiveRecord::Base.logger = Logger.new(File.open(File.join('log', 'database.log'), 'a'))
   end
 
   desc "Migrate the database through scripts in db/migrate. Target specific version with VERSION=x"
