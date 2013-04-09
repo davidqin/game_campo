@@ -69,4 +69,14 @@ namespace :db do
   task :drop do
     FileUtils.rm('./db/development.sqlite3')
   end
+
+  desc "generate seed datas in db/seed.rb"
+  task :seed => :connection do
+    file_path = File.join('db', 'seeds.rb')
+    unless File.exist?(file_path)
+      abort "Can not find db/seed.rb"
+    end
+
+    require "./#{file_path}"
+  end
 end

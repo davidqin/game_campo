@@ -6,7 +6,7 @@ require 'sqlite3'
 require 'logger'
 require 'rack/coffee'
 
-require File.expand_path('../models/user', __FILE__)
+Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
 
 use Rack::Coffee, root: 'public', urls: '/js'
 
@@ -79,7 +79,7 @@ end
 
 def set_current_user
   return unless session[:user_id]
-  @current_user = User.find_by_id!(session[:user_id])
+  @current_user = User.find_by_id(session[:user_id])
 end
 
 def authenticate!
