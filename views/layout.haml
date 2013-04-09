@@ -27,7 +27,7 @@
                 %ul.dropdown-menu
                   %li
                     - Game.all.each do |g|
-                      =link_to g.path, g.name
+                      =link_to "/games/" + g.path, g.name
               %li.dropdown
                 %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
                   Chess Games

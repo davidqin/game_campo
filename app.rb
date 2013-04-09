@@ -17,7 +17,7 @@ get '/games' do
 end
 
 get '/games/:game_type' do
-  #@game_type = params[:game_type]
+  @game = Game.find_by_path!(params[:game_type])
   haml :'/games/hall'
 end
 
