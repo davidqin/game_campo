@@ -1,26 +1,4 @@
-require 'sinatra'
-require 'haml'
-
-require 'active_record'
-require 'sqlite3'
-require 'logger'
-require 'rack/coffee'
-
-Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
-
-use Rack::Coffee, root: 'public', urls: '/js'
-
-ActiveRecord::Base.logger = Logger.new('./log/debug.log')
-ActiveRecord::Base.configurations = YAML.load_file("./config/databases.yml")
-ActiveRecord::Base.establish_connection('development')
-
-load './helper/base_helper.rb'
-
-set :views, File.dirname(__FILE__) + "/views"
-set :public_folder, 'public'
-
-enable :sessions
-set :session_secret, 'super secret'
+require './config/environment'
 
 before %r{^\/} do
   set_current_user
