@@ -16,7 +16,7 @@ Dir[File.join(ENV['PWD'], 'models', '*.rb')].each {|file| require file }
 # serve coffee-script
 use Rack::Coffee, root: 'public', urls: '/js'
 
-# views helper
+# load all views helper
 Dir[File.join(ENV['PWD'], 'helper', '*.rb')].each {|file| require file }
 
 set :views, File.join(ENV['PWD'], 'views')
