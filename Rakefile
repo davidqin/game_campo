@@ -53,10 +53,12 @@ namespace :db do
     open(File.join(migrations_dir, filename), 'w') do |f|
       f << (<<-EOS).gsub("      ", "")
       class #{migration_name} < ActiveRecord::Migration
-        def self.up
-        end
+        def change
+          create_table :#{name} do |t|
+            # sth you need
 
-        def self.down
+            t.timestamps
+          end
         end
       end
       EOS
