@@ -77,6 +77,8 @@ namespace :db do
       abort "Can not find db/seed.rb"
     end
 
-    require "./#{file_path}"
+    Dir[File.dirname(__FILE__) + '/models/*.rb'].each {|file| require file }
+
+    load "./#{file_path}"
   end
 end
