@@ -1,8 +1,6 @@
 class RoomsController extends Spine.Controller
   constructor: ->
     super
-    @rooms.each (i)->
-      alert i
 
   events:
     "click .room": "click"
