@@ -5,9 +5,14 @@ Room = @GC.models.Room
 RoomsController = @GC.controllers.RoomsController
 
 class Hall extends Spine.Controller
-  constructor: ->
-    alert "work!!"
+  elements:
+    "#rooms": "roomsEl"
 
+  constructor: ->
+    super
+    @rooms = new RoomsController(el: @roomsEl)
+
+    # alert("works!")
 
 $ ->
   new Hall(el: $('body'))
