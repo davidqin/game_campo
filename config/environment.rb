@@ -32,4 +32,5 @@ Dir[File.join(ENV['PWD'], 'config', 'middlewares', '*.rb')].each {|file| require
 use SprocketsMiddleware, %r{/assets} do |env|
   env.append_path "assets/css"
   env.append_path "assets/js"
+  env.append_path "assets/img"
 end

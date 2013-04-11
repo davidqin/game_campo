@@ -14,7 +14,6 @@ class SprocketsMiddleware
   def call(env)
     path_info = env["PATH_INFO"]
     if path_info =~ prefix
-      binding.pry
       env["PATH_INFO"].sub!(prefix, "")
       sprockets.call(env)
     else
