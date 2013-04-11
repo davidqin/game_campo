@@ -1,2 +1,1 @@
-$ ->
-  alert "works"
+#= require lib/spine
