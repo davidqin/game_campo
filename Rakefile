@@ -45,22 +45,24 @@ namespace :db do
 
     migrations_dir = File.join("db", "migrations")
     version = ENV["VERSION"] || Time.now.utc.strftime("%Y%m%d%H%M%S")
-    filename = "#{version}_#{name}.rb"
-    migration_name = name.gsub(/_(.)/) { $1.upcase }.gsub(/^(.)/) { $1.upcase }
+    filename = "#{version}_create_#{name}.rb"
+    migration_name = "Create" + name.gsub(/_(.)/) { $1.upcase }.gsub(/^(.)/) { $1.upcase }
 
     FileUtils.mkdir_p(migrations_dir)
 
     open(File.join(migrations_dir, filename), 'w') do |f|
-      f << (<<-EOS).gsub("      ", "")
-      class #{migration_name} < ActiveRecord::Migration
-        def change
-          create_table :#{name} do |t|
-            # sth you need
+      f << (<<-EOS).gsub("        ", "")
+        class #{migration_name} < ActiveRecord::Migration
+          def change
+            create_table :#{name} do |t|
+              # sth you need
 
-            t.timestamps
+              t.timestamps
+            end
+
+            # add_index :#{name}
           end
         end
-      end
       EOS
     end
   end
