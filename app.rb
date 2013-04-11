@@ -1,3 +1,4 @@
+require 'sinatra'
 require './config/environment'
 
 before %r{^\/} do
@@ -63,4 +64,3 @@ end
 def authenticate!
   redirect '/account/login' unless @current_user
 end
-

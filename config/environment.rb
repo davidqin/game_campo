@@ -1,4 +1,3 @@
-require 'sinatra'
 require 'haml'
 require 'sqlite3'
 require 'logger'
@@ -14,14 +13,23 @@ ActiveRecord::Base.establish_connection('development')
 Dir[File.join(ENV['PWD'], 'models', '*.rb')].each {|file| require file }
 
 # serve coffee-script
-use Rack::Coffee, root: 'public', urls: '/js'
+#use Rack::Coffee, root: 'public', urls: '/js'
 
 # load all views helper
 Dir[File.join(ENV['PWD'], 'helper', '*.rb')].each {|file| require file }
 
 set :views, File.join(ENV['PWD'], 'views')
-set :public_folder, 'public'
+#set :public_folder, 'public'
 
 # sessions
 enable :sessions
 set :session_secret, 'super secret'
+
+# load middlewares
+Dir[File.join(ENV['PWD'], 'config', 'middlewares', '*.rb')].each {|file| require file }
+
+# use Sprockets
+use SprocketsMiddleware, %r{/assets} do |env|
+  env.append_path "assets/css"
+  env.append_path "assets/js"
+end
