@@ -22,6 +22,14 @@ get '/games/:game_type' do
   haml :'/games/hall'
 end
 
+get '/games/:game_type/:room_number' do
+  @game = Game.find_by_path!(params[:game_type])
+  @room = @game.rooms.find_by_number!(params[:room_number])
+
+  @room.set_player_1 = @current_user
+  haml :'/games/room'
+end
+
 get '/account/login' do
   haml :'account/login'
 end
