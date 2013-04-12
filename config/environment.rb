@@ -12,6 +12,10 @@ ActiveRecord::Base.establish_connection('development')
 # load all models
 Dir[File.join(ENV['PWD'], 'models', '*.rb')].each {|file| require file }
 
+# use ActiveRecord Observer
+Dir[File.join(ENV['PWD'], 'models', 'observers', '*.rb')].each {|file| require file }
+ActiveRecord::Base.add_observer HallObserver.instance
+
 # load all views helper
 Dir[File.join(ENV['PWD'], 'helper', '*.rb')].each {|file| require file }
 
