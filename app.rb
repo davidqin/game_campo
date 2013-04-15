@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'sinatra-websocket'
 require './config/environment'
 
 before %r{^\/} do
@@ -19,15 +20,50 @@ end
 
 get '/games/:game_type' do
   @game = Game.find_by_path!(params[:game_type])
-  haml :'/games/hall'
+  if not request.websocket?
+    haml :'/games/hall'
+  else
+    request.websocket do |ws|
+      @channel ||= Channel.find_or_create(env['PATH_INFO'])
+
+      ws.onopen do
+        @channel.add(ws)
+      end
+
+      ws.onmessage do |msg|
+        EM.next_tick { @channel.members.each{|s| s.send(msg) } }
+      end
+
+      ws.onclose do
+        @channel.del(ws)
+      end
+    end
+  end
 end
 
 get '/games/:game_type/:room_number' do
   @game = Game.find_by_path!(params[:game_type])
   @room = @game.rooms.find_by_number!(params[:room_number])
 
-  @room.set_player_1 = @current_user
-  haml :'/games/room'
+  if not request.websocket?
+    haml :'/games/room'
+  else
+    request.websocket do |ws|
+      @channel ||= Channel.find_or_create(env['PATH_INFO'])
+
+      ws.onopen do
+        @channel.add(ws)
+      end
+
+      ws.onmessage do |msg|
+        EM.next_tick { @channel.members.each{|s| s.send(msg) } }
+      end
+
+      ws.onclose do
+        @channel.del(ws)
+      end
+    end
+  end
 end
 
 get '/account/login' do
@@ -65,6 +101,11 @@ post '/account/register' do
 end
 
 def set_current_user
+  # magic!
+  if request.websocket?
+    session[:user_id] = env['rack.session.unpacked_cookie_data']["user_id"]
+  end
+
   return unless session[:user_id]
   @current_user = User.find_by_id(session[:user_id])
 end

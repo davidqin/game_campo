@@ -7,7 +7,7 @@ class RoomsController extends Spine.Controller
 
   click: (event) ->
     item = jQuery(event.target);
-    alert "click"
+    # alert "click"
 
   elements:
     ".room": "rooms"

@@ -20,6 +20,4 @@ helpers do
    #{html}
    </div>"
   end
-
-
 end

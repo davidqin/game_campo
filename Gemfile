@@ -2,7 +2,7 @@ source 'http://ruby.taobao.org/'
 
 gem 'sinatra', '1.4.2'
 
-gem 'em-websocket'
+gem 'sinatra-websocket'
 
 gem 'pry'
 
@@ -14,4 +14,4 @@ gem 'sqlite3', '1.3.7'
 
 gem 'sprockets', '2.9.2'
 
-gem 'thin', '1.2.11'
+gem 'thin'
