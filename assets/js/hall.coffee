@@ -16,3 +16,4 @@ class Hall extends Spine.Controller
 
 $ ->
   new Hall(el: $('body'))
+  ws = new WebSocket('ws://' + window.location.host + window.location.pathname)
