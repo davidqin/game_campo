@@ -31,7 +31,7 @@ get '/games/:game_type' do
       end
 
       ws.onmessage do |msg|
-        EM.next_tick { @channel.members.each{|s| s.send(msg) } }
+        # EM.next_tick { @channel.members.each{|s| s.send(msg) } }
       end
 
       ws.onclose do
@@ -56,7 +56,8 @@ get '/games/:game_type/:room_number' do
       end
 
       ws.onmessage do |msg|
-        EM.next_tick { @channel.members.each{|s| s.send(msg) } }
+        puts msg
+        # EM.next_tick { @channel.members.each{|s| s.send(msg) } }
       end
 
       ws.onclose do

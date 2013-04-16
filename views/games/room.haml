@@ -1,29 +1,39 @@
+%script{:src => "/assets/#{@game.style_name}.js", :type => "text/javascript"}
+%link{:href => "/assets/#{@game.style_name}.css", :rel => "stylesheet"}/
+.row-fluid{class: @game.style_name}
+  .span3
+    .options.well
+      %button.btn.btn-success.btn-block READY
+    .player-1.well
+      %img{src: "/assets/portrait.jpg"}
+    .player-2.well
+      %img{src: "/assets/portrait.jpg"}
+    .watchers.well
+      watchers
+    .exit.well
+      %button.btn.btn-danger.btn-block BACK TO HALL
+  .span9.well#gamepool
 
-%body
-  %h1 Simple Echo & Chat Server
-  %form#form
-    %input#input{:type => "text", :value => "send a message"}/
-  #msgs
-:javascript
-  window.onload = function(){
-    (function(){
-      var show = function(el){
-        return function(msg){ el.innerHTML = msg + '<br />' + el.innerHTML; }
-      }(document.getElementById('msgs'));
+/ :javascript
+/   window.onload = function()){
+/     (function(){
+/       var show = function(el){
+/         return function(msg){ el.innerHTML = msg + '<br />' + el.innerHTML; }
+/       }(document.getElementById('msgs'));
 
-      var ws       = new WebSocket('ws://' + window.location.host + window.location.pathname);
-      ws.onopen    = function()  { show('websocket opened'); };
-      ws.onclose   = function()  { show('websocket closed'); }
-      ws.onmessage = function(m) { show('websocket message: ' +  m.data); };
+/       var ws       = new WebSocket('ws://' + window.location.host + window.location.pathname);
+/       ws.onopen    = function()  { show('websocket opened'); };
+/       ws.onclose   = function()  { show('websocket closed'); }
+/       ws.onmessage = function(m) { show('websocket message: ' +  m.data); };
 
-      var sender = function(f){
-        var input     = document.getElementById('input');
-        input.onclick = function(){ input.value = "" };
-        f.onsubmit    = function(){
-          ws.send(input.value);
-          input.value = "send a message";
-          return false;
-        }
-      }(document.getElementById('form'));
-    })();
-  }
+/       var sender = function(f){
+/         var input     = document.getElementById('input');
+/         input.onclick = function(){ input.value = "" };
+/         f.onsubmit    = function(){
+/           ws.send(input.value);
+/           input.value = "send a message";
+/           return false;
+/         }
+/       }(document.getElementById('form'));
+/     })();
+/   }

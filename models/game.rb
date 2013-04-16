@@ -8,4 +8,8 @@ class Game < ActiveRecord::Base
       self.rooms.create!(number: num + 1)
     end
   end
+
+  def style_name
+    path
+  end
 end

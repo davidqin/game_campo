@@ -18,20 +18,12 @@
             %ul.nav
               %li.dropdown
                 %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
-                  Card Games
+                  Games List
                   %b.caret
                 %ul.dropdown-menu
                   %li
                     - Game.all.each do |g|
                       =link_to "/games/" + g.path, g.name
-              %li.dropdown
-                %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
-                  Chess Games
-                  %b.caret
-                %ul.dropdown-menu
-                  %li
-                    %a Chess
-                    %a Chinese chess
             %ul.nav.pull-right
               %li.divider-vertical
               - if not @current_user
