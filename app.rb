@@ -28,6 +28,7 @@ get '/games/:game_type' do
 
       ws.onopen do
         @channel.add(ws)
+        puts "#{@current_user.email} join #{@channel.id}"
       end
 
       ws.onmessage do |msg|
@@ -36,6 +37,7 @@ get '/games/:game_type' do
 
       ws.onclose do
         @channel.del(ws)
+        puts "#{@current_user.email} LEFT #{@channel.id}"
       end
     end
   end
@@ -53,15 +55,17 @@ get '/games/:game_type/:room_number' do
 
       ws.onopen do
         @channel.add(ws)
+        puts "#{@current_user.email} JOIN #{@channel.id}"
       end
 
       ws.onmessage do |msg|
         puts msg
-        # EM.next_tick { @channel.members.each{|s| s.send(msg) } }
+        EM.next_tick { @channel.members.each{|s| s.send("a") } }
       end
 
       ws.onclose do
         @channel.del(ws)
+        puts "#{@current_user.email} LEFT #{@channel.id}"
       end
     end
   end

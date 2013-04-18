@@ -1,0 +1,34 @@
+#gobang {
+  width: 525px;
+  height: 525px;
+  padding: 5px;
+  background-image:url(/assets/gobang/checkerboard.jpg);
+}
+
+#gobang table {
+  width: 525px;
+  height: 525px;
+  margin: 0px;
+  padding: 0px;
+  border-collapse:collapse;
+}
+
+#gobang table tr.def {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+#gobang table tr.def td{
+  border-width: 1px 1px 1px 1px; /* 设置边框状粗细：上 右 下 左 = 对应：1px 0 0 1px */
+  background-size: 100%;
+}
+
+#gobang table tr.def td:hover{
+  background-color: rgba(250, 100, 100, 0.7);
+  cursor: pointer;
+}
+
+#cancel_ready{
+  display: none;
+  margin-top: 0px;
+}
