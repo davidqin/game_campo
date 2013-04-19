@@ -5,6 +5,13 @@ require 'rack/coffee'
 require 'active_record'
 require 'pry'
 
+class Object
+  def try method_name
+    self.send(method_name) if self
+    self
+  end
+end
+
 # connect database
 ActiveRecord::Base.logger = Logger.new(File.join(ENV['PWD'], 'log', 'database.log'))
 ActiveRecord::Base.configurations = YAML.load_file(File.join(ENV['PWD'], 'config', 'databases.yml'))

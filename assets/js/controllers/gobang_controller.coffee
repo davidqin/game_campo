@@ -10,6 +10,7 @@ class GobangController extends Spine.Controller
     "#game_pool":    "game_poolEl"
     "#player1":      "player1El"
     "#player2":      "player2El"
+    "#watchers":     "watchersEl"
 
   constructor: ->
     super
@@ -19,28 +20,63 @@ class GobangController extends Spine.Controller
 
     @ws.onmessage = (message) =>
       message = JSON.parse(message.data)
-      if message.type && message.type == "game_start"
+      if message.type && message.type == "set_position"
+        @set_position message
+      else if message.type && message.type == "game_start"
         @game_begin()
-      else if message.type && message.type == "position"
-        @set_position message.position
+      else if message.type && message.type == "member_list"
+        @member_list message
+      else if message.type && message.type == "players_status"
+        @players_status message
       else if message.type && message.type == "put_piece" && message.status == "success"
         $(".hole[x=#{message.x}][y=#{message.y}]").addClass(if @turn == 1 then "black" else "white").removeClass("hole")
         @change_turn()
       else if message.type && message.type == "put_piece" && message.status == "failed"
         alert "put piece failed"
       else if message.type && message.type == "game_over"
-        @game_over()
+        @game_over message
 
-  set_position: (position) ->
-    @position = position
+  players_status: (message) ->
+    if message.player1
+      @player1El.addClass("ready")
+    else
+      @player1El.removeClass("ready")
+
+    if message.player2
+      @player2El.addClass("ready")
+    else
+      @player2El.removeClass("ready")
+
+  set_position: (message) ->
+    @position = message.position
     if @position == 1
-      @myself = @player1El
+      @myself   = @player1El
       @opponent = @player2El
       @player1El.addClass('myself')
     else if @position == 2
-      @myself = @player2El
+      @myself   = @player2El
       @opponent = @player1El
       @player2El.addClass('myself')
+    else if @position == -1
+      @readyEl.addClass("disabled")
+      @cancel_readyEl.addClass("disabled")
+
+
+  member_list: (message) ->
+    members = message.members
+
+    player1 = members.player1
+    player2 = members.player2
+    watchers = members.watchers
+
+    @player1El.html player1
+    @player2El.html player2
+    html = ""
+
+    for watcher in watchers
+      html += watcher
+    @watchersEl.html html
+
 
   change_turn: ->
     if @turn == 1
@@ -64,8 +100,8 @@ class GobangController extends Spine.Controller
   reset_game: ->
     $('td').removeClass("white").removeClass("black").removeClass("hole").addClass("hole")
 
-  game_over: ->
-    alert "game_over"
+  game_over: (message) ->
+    alert "game_over, winner is #{message.winner}"
     @game_start = false
     @player1El.removeClass("turn")
     @player2El.removeClass("turn")
@@ -75,7 +111,6 @@ class GobangController extends Spine.Controller
 
   ready: ->
     @ws.send JSON.stringify(type: "ready")
-    @myself.addClass("ready")
     @cancel_readyEl.show()
     @readyEl.hide()
 

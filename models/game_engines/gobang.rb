@@ -1,4 +1,9 @@
 class Gobang
+
+  # ready
+  # cancel_ready
+  # put_piece
+
   Perfix = "gobang-"
 
   @@games = {}
@@ -11,17 +16,20 @@ class Gobang
       self.websocket = websocket
       self.ready     = false
     end
+
+    def email
+      user.email
+    end
   end
 
   class << self
     def handle user, websocket, custom_string
       player = Player.new(user, websocket)
-      game = find_or_create(Gobang::Perfix + custom_string)
-      position = game.add(player, websocket)
+      game   = find_or_create(Gobang::Perfix + custom_string)
 
       websocket.onopen do
-        websocket.send JSON(type: :position, position: position)
-        puts "#{user.email} JOIN #{game.id}, position: #{position}"
+        game.add(player, websocket)
+        puts "#{user.email} JOIN #{game.id}"
       end
 
       websocket.onmessage do |msg|
@@ -46,41 +54,53 @@ class Gobang
     end
   end
 
-  attr_accessor :id, :player1, :player2, :chess_board, :turn, :status, :winner, :loser
+  attr_accessor :id, :player1, :player2, :watchers, :chess_board, :turn, :status, :winner, :loser
 
   def initialize id
-    self.id = id
-
-    self.turn = 1
+    self.status      = false
+    self.id          = id
+    self.turn        = 1
     self.chess_board = []
+    self.watchers    = []
 
     chess_board_reset
   end
 
   def add player, websocket
-    unless self.player1
+    if not self.player1
       self.player1 = player
       player.position = 1
-      return player.position
-    end
-
-    unless self.player2
+      player1.websocket.send JSON(type: :set_position, position: 1)
+    elsif not self.player2
       self.player2 = player
       player.position = 2
-      return player.position
+      player2.websocket.send JSON(type: :set_position, position: 2)
+    else
+      self.watchers << player
+      player.position = -1
+      player.websocket.send JSON(type: :set_position, position: -1)
     end
+
+    broadcast_member_list
   end
 
   def left player
     if self.player1 == player
       self.player1 = nil
-      game_over player2
+      broadcast_member_list
+      game_over player2 if self.status
+      return
     end
 
     if self.player2 == player
       self.player2 = nil
-      game_over player1
+      broadcast_member_list
+      game_over player1 if self.status
+      return
     end
+
+    watchers.delete player
+    broadcast_member_list
   end
 
   def game_over winner
@@ -95,10 +115,10 @@ class Gobang
     player1.ready = false if player1
     player2.ready = false if player2
 
+    self.status = false
     chess_board_reset
 
-    self.winner.websocket.send(JSON(type: :game_over, status: :winner)) if self.winner
-    self.loser.websocket.send(JSON(type: :game_over, status: :loser))   if self.loser
+    broadcast type: :game_over, winner: winner.try(:email)
   end
 
   def chess_board_reset
@@ -113,17 +133,26 @@ class Gobang
   end
 
   def ready player, msg_hash
+    return if self.status
+    return if player.ready
+
     player.ready = true
+
+    broadcast_players_status
 
     if player1 and player1.ready and player2 and player2.ready
       puts "#{id} begin!"
-      self.player1.websocket.send JSON(type: :game_start)
-      self.player2.websocket.send JSON(type: :game_start)
+      self.status = true
+      broadcast type: :game_start
     end
   end
 
   def cancel_ready player, msg_hash
+    return if self.status
+    return unless player.ready
+
     player.ready = false
+    broadcast_players_status
   end
 
   def put_piece player, msg_hash
@@ -136,9 +165,30 @@ class Gobang
     #   puts a.join("-")
     # end
 
-    player1.websocket.send(JSON(type: :put_piece, status: :success, x: msg_hash["x"], y: msg_hash["y"]))
-    player2.websocket.send(JSON(type: :put_piece, status: :success, x: msg_hash["x"], y: msg_hash["y"]))
+    broadcast type: :put_piece, status: :success, x: msg_hash["x"], y: msg_hash["y"]
     check_win x, y, player
+  end
+
+  def broadcast options
+    json_string = JSON options
+
+    EM.next_tick do
+      player1.websocket.send(json_string) if player1
+      player2.websocket.send(json_string) if player2
+      watchers.each { |watcher| watcher.websocket.send(json_string) }
+    end
+  end
+
+  def broadcast_players_status
+    broadcast type: :players_status, player1: player1.try(:ready), player2: player2.try(:ready)
+  end
+
+  def broadcast_member_list
+    broadcast type: :member_list, members: {
+      player1: player1.try(:email),
+      player2: player2.try(:email),
+      watchers: watchers.map{ |watcher| watcher.email }
+    }
   end
 
   def check_win x, y, player
