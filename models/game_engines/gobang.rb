@@ -159,6 +159,8 @@ class Gobang
     x = msg_hash["x"].to_i - 1
     y = msg_hash["y"].to_i - 1
 
+    return if chess_board[x][y] != 0
+
     chess_board[x][y] = player.position
 
     # chess_board.each do |a|

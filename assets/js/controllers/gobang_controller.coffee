@@ -31,8 +31,6 @@ class GobangController extends Spine.Controller
       else if message.type && message.type == "put_piece" && message.status == "success"
         $(".hole[x=#{message.x}][y=#{message.y}]").addClass(if @turn == 1 then "black" else "white").removeClass("hole")
         @change_turn()
-      else if message.type && message.type == "put_piece" && message.status == "failed"
-        alert "put piece failed"
       else if message.type && message.type == "game_over"
         @game_over message
 
