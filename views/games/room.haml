@@ -1,17 +1,19 @@
 %script{:src => "/assets/#{@game.style_name}.js", :type => "text/javascript"}
 %link{:href => "/assets/#{@game.style_name}.css", :rel => "stylesheet"}/
+
 .row-fluid{class: @game.style_name}
   .span3
-    .options.well
+    #buttons.well
       %button.btn.btn-success.btn-block#ready READY
       %button.btn.btn-warning.btn-block#cancel_ready CANCEL READY
     #player1.well
       %img{src: "/assets/portrait.jpg"}
     #player2.well
       %img{src: "/assets/portrait.jpg"}
-    .watchers.well
+    #watchers.well
       watchers
-    .exit.well
-      %button.btn.btn-danger.btn-block BACK TO HALL
+    .well
+      %a.btn.btn-danger.btn-block{href: "/games/#{@game.path}"} BACK TO HALL
   .span9.well
     #game_pool
+#chat

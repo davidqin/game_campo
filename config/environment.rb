@@ -12,6 +12,7 @@ ActiveRecord::Base.establish_connection('development')
 
 # load all models
 Dir[File.join(ENV['PWD'], 'models', '*.rb')].each {|file| require file }
+Dir[File.join(ENV['PWD'], 'models', 'game_engines', '*.rb')].each {|file| require file }
 
 # use ActiveRecord Observer
 # Dir[File.join(ENV['PWD'], 'models', 'observers', '*.rb')].each {|file| require file }

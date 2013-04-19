@@ -1,9 +1,8 @@
 class GobangController extends Spine.Controller
   events:
-    "click #ready":        "get_ready"
-    "click #cancel_ready": "cancel_ready"
-    # "click .hole":         "put_piece"
-    # "click .surrender":    "surrender"
+    "click #ready":         "ready"
+    "click #cancel_ready":  "cancel_ready"
+    "click .hole":          "put_piece"
 
   elements:
     "#ready":        "readyEl"
@@ -13,22 +12,87 @@ class GobangController extends Spine.Controller
     "#player2":      "player2El"
 
   constructor: ->
-    @ws = new WebSocket('ws://' + window.location.host + window.location.pathname)
     super
+    @game_start = false
     @draw_chessboard()
+    @ws = new WebSocket('ws://' + window.location.host + window.location.pathname)
 
-  get_ready: ->
-    @ws.send JSON.stringify(type: "get_ready")
-    @player1El.css("background", "#0a0")
+    @ws.onmessage = (message) =>
+      message = JSON.parse(message.data)
+      if message.type && message.type == "game_start"
+        @game_begin()
+      else if message.type && message.type == "position"
+        @set_position message.position
+      else if message.type && message.type == "put_piece" && message.status == "success"
+        $(".hole[x=#{message.x}][y=#{message.y}]").addClass(if @turn == 1 then "black" else "white").removeClass("hole")
+        @change_turn()
+      else if message.type && message.type == "put_piece" && message.status == "failed"
+        alert "put piece failed"
+      else if message.type && message.type == "game_over"
+        @game_over()
+
+  set_position: (position) ->
+    @position = position
+    if @position == 1
+      @myself = @player1El
+      @opponent = @player2El
+      @player1El.addClass('myself')
+    else if @position == 2
+      @myself = @player2El
+      @opponent = @player1El
+      @player2El.addClass('myself')
+
+  change_turn: ->
+    if @turn == 1
+      @player1El.removeClass("turn")
+      @player2El.addClass("turn")
+      @turn = 2
+
+    else if @turn == 2
+      @player1El.addClass("turn")
+      @player2El.removeClass("turn")
+      @turn = 1
+
+  game_begin: ->
+    @game_start = true
+    @turn = 1
+    @player1El.removeClass("ready")
+    @player2El.removeClass("ready")
+    @player1El.addClass("turn")
+    @reset_game()
+
+  reset_game: ->
+    $('td').removeClass("white").removeClass("black").removeClass("hole").addClass("hole")
+
+  game_over: ->
+    alert "game_over"
+    @game_start = false
+    @player1El.removeClass("turn")
+    @player2El.removeClass("turn")
+    @cancel_readyEl.hide()
+    @readyEl.show()
+
+
+  ready: ->
+    @ws.send JSON.stringify(type: "ready")
+    @myself.addClass("ready")
     @cancel_readyEl.show()
     @readyEl.hide()
 
   cancel_ready: ->
     @ws.send JSON.stringify(type: "cancel_ready")
-    @player1El.css("background", "")
+    @myself.css("background", "")
     @cancel_readyEl.hide()
     @readyEl.show()
 
+  put_piece: (event) ->
+    return unless @game_start
+    return unless @my_turn()
+    hole =  $(event.target)
+    @ws.send JSON.stringify {type: "put_piece", x: hole.attr("x"), y: hole.attr("y")}
+
+  my_turn: ->
+    @turn == @position
 
   draw_chessboard: ->
     list = [1..15]
@@ -37,10 +101,9 @@ class GobangController extends Spine.Controller
     for num_row in list
       html += "<tr row=#{num_row} class=\"def\">"
       for num_col in list
-        html += "<td x=#{num_row} y=#{num_col}></td>"
+        html += "<td x=#{num_row} y=#{num_col} class=\"hole\"></td>"
       html += "</tr>"
     html += "</table></div>"
-    # $('#game_pool').html(html).show()
     @game_poolEl.html(html).show()
 
 @GC.controllers.GobangController = GobangController

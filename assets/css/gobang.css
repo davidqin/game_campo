@@ -23,12 +23,32 @@
   background-size: 100%;
 }
 
-#gobang table tr.def td:hover{
+#gobang table tr.def .hole:hover{
   background-color: rgba(250, 100, 100, 0.7);
   cursor: pointer;
+}
+
+#gobang .white {
+  background-image:url(/assets/gobang/white.png);
+}
+
+#gobang .black {
+  background-image:url(/assets/gobang/black.png);
 }
 
 #cancel_ready{
   display: none;
   margin-top: 0px;
+}
+
+.turn {
+  background-color: red;
+}
+
+.ready {
+  background-color: green;
+}
+
+.myself {
+  border: 5px solid black;
 }

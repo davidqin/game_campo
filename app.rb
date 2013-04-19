@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sinatra-websocket'
 require './config/environment'
+require 'json'
 
 before %r{^\/} do
   set_current_user
@@ -19,54 +20,22 @@ get '/games' do
 end
 
 get '/games/:game_type' do
-  @game = Game.find_by_path!(params[:game_type])
   if not request.websocket?
+    @game = Game.find_by_path!(params[:game_type])
     haml :'/games/hall'
   else
-    request.websocket do |ws|
-      @channel ||= Channel.find_or_create(env['PATH_INFO'])
-
-      ws.onopen do
-        @channel.add(ws)
-        puts "#{@current_user.email} join #{@channel.id}"
-      end
-
-      ws.onmessage do |msg|
-        # EM.next_tick { @channel.members.each{|s| s.send(msg) } }
-      end
-
-      ws.onclose do
-        @channel.del(ws)
-        puts "#{@current_user.email} LEFT #{@channel.id}"
-      end
+    request.websocket do |websocket|
     end
   end
 end
 
-get '/games/:game_type/:room_number' do
-  @game = Game.find_by_path!(params[:game_type])
-  @room = @game.rooms.find_by_number!(params[:room_number])
-
+get '/games/:game_type/:custom_string' do
   if not request.websocket?
+    @game = Game.find_by_path!(params[:game_type])
     haml :'/games/room'
   else
-    request.websocket do |ws|
-      @channel ||= Channel.find_or_create(env['PATH_INFO'])
-
-      ws.onopen do
-        @channel.add(ws)
-        puts "#{@current_user.email} JOIN #{@channel.id}"
-      end
-
-      ws.onmessage do |msg|
-        puts msg
-        EM.next_tick { @channel.members.each{|s| s.send("a") } }
-      end
-
-      ws.onclose do
-        @channel.del(ws)
-        puts "#{@current_user.email} LEFT #{@channel.id}"
-      end
+    request.websocket do |websocket|
+      game_engin.handle @current_user, websocket, params[:custom_string]
     end
   end
 end
@@ -103,6 +72,10 @@ post '/account/register' do
     @errors = @user.errors.messages
     haml :'account/register'
   end
+end
+
+def game_engin
+  Class.const_get(params[:game_type].capitalize)
 end
 
 def set_current_user
