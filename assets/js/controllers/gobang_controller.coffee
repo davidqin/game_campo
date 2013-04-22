@@ -14,25 +14,30 @@ class GobangController extends Spine.Controller
 
   constructor: ->
     super
-    @game_start = false
+    @game_is_start = false
     @draw_chessboard()
     @ws = new WebSocket('ws://' + window.location.host + window.location.pathname)
 
     @ws.onmessage = (message) =>
       message = JSON.parse(message.data)
-      if message.type && message.type == "set_position"
-        @set_position message
+      if message.type      && message.type == "set_position"
+        @set_position(message)
       else if message.type && message.type == "game_start"
-        @game_begin()
+        @game_start()
+      else if message.type && message.type == "ready_success"
+        @ready_success()
+      else if message.type && message.type == "cancel_ready_success"
+        @cancel_ready_success()
       else if message.type && message.type == "member_list"
-        @member_list message
+        @member_list(message)
       else if message.type && message.type == "players_status"
-        @players_status message
-      else if message.type && message.type == "put_piece" && message.status == "success"
-        $(".hole[x=#{message.x}][y=#{message.y}]").addClass(if @turn == 1 then "black" else "white").removeClass("hole")
-        @change_turn()
+        @players_status(message)
+      else if message.type && message.type == "put_piece"
+        @update_chessboard(message)
+      else if  message.type && message.type == "update_turn"
+        @update_turn message
       else if message.type && message.type == "game_over"
-        @game_over message
+        @game_over(message)
 
   players_status: (message) ->
     if message.player1
@@ -44,6 +49,20 @@ class GobangController extends Spine.Controller
       @player2El.addClass("ready")
     else
       @player2El.removeClass("ready")
+
+  update_chessboard: (message) ->
+    x = message.x
+    y = message.y
+    $(".hole[x=#{x}][y=#{y}]").addClass(if @turn == 1 then "black" else "white").removeClass("hole")
+
+  ready_success: ->
+    @cancel_readyEl.show()
+    @readyEl.hide()
+
+  cancel_ready_success: ->
+    @cancel_readyEl.hide()
+    @readyEl.show()
+
 
   set_position: (message) ->
     @position = message.position
@@ -76,20 +95,17 @@ class GobangController extends Spine.Controller
     @watchersEl.html html
 
 
-  change_turn: ->
-    if @turn == 1
+  update_turn: (message) ->
+    @turn = message.turn
+    if @turn == 2
       @player1El.removeClass("turn")
       @player2El.addClass("turn")
-      @turn = 2
-
-    else if @turn == 2
+    else if @turn == 1
       @player1El.addClass("turn")
       @player2El.removeClass("turn")
-      @turn = 1
 
-  game_begin: ->
-    @game_start = true
-    @turn = 1
+  game_start: ->
+    @game_is_start = true
     @player1El.removeClass("ready")
     @player2El.removeClass("ready")
     @player1El.addClass("turn")
@@ -100,7 +116,7 @@ class GobangController extends Spine.Controller
 
   game_over: (message) ->
     alert "game_over, winner is #{message.winner}"
-    @game_start = false
+    @game_is_start = false
     @player1El.removeClass("turn")
     @player2El.removeClass("turn")
     @cancel_readyEl.hide()
@@ -109,18 +125,14 @@ class GobangController extends Spine.Controller
 
   ready: ->
     @ws.send JSON.stringify(type: "ready")
-    @cancel_readyEl.show()
-    @readyEl.hide()
 
   cancel_ready: ->
     @ws.send JSON.stringify(type: "cancel_ready")
-    @myself.css("background", "")
-    @cancel_readyEl.hide()
-    @readyEl.show()
 
   put_piece: (event) ->
-    return unless @game_start
+    return unless @game_is_start
     return unless @my_turn()
+
     hole =  $(event.target)
     @ws.send JSON.stringify {type: "put_piece", x: hole.attr("x"), y: hole.attr("y")}
 
