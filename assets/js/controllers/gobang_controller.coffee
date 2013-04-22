@@ -3,6 +3,7 @@ class GobangController extends Spine.Controller
     "click #ready":         "ready"
     "click #cancel_ready":  "cancel_ready"
     "click .hole":          "put_piece"
+    "touchend .hole":       "put_piece"
 
   elements:
     "#ready":        "readyEl"
@@ -18,28 +19,22 @@ class GobangController extends Spine.Controller
     @draw_chessboard()
     @ws = new WebSocket('ws://' + window.location.host + window.location.pathname)
 
-    @ws.onmessage = (message) =>
-      message = JSON.parse(message.data)
-      if message.type      && message.type == "set_position"
-        @set_position(message)
-      else if message.type && message.type == "game_start"
-        @game_start()
-      else if message.type && message.type == "ready_success"
-        @ready_success()
-      else if message.type && message.type == "cancel_ready_success"
-        @cancel_ready_success()
-      else if message.type && message.type == "member_list"
-        @member_list(message)
-      else if message.type && message.type == "players_status"
-        @players_status(message)
-      else if message.type && message.type == "put_piece"
-        @update_chessboard(message)
-      else if  message.type && message.type == "update_turn"
-        @update_turn message
-      else if message.type && message.type == "game_over"
-        @game_over(message)
-      else if message.type && message.type == "error"
-        alert message.message
+    @order_set =
+      "set_position":          @set_position
+      "game_start":            @game_start
+      "ready_success":         @ready_success
+      "cancel_ready_success":  @cancel_ready_success
+      "member_list":           @member_list
+      "players_status":        @players_status
+      "put_piece":             @update_chessboard
+      "update_turn":           @update_turn
+      "game_over":             @game_over
+      "error":                 (options) -> alert options.message
+
+    @ws.onmessage = (msg_string) =>
+      options = JSON.parse(msg_string.data)
+      func    = @order_set[options.type]
+      func.call(@, options)
 
   players_status: (message) ->
     if message.player1
@@ -65,7 +60,6 @@ class GobangController extends Spine.Controller
     @cancel_readyEl.hide()
     @readyEl.show()
 
-
   set_position: (message) ->
     @position = message.position
     if @position == 1
@@ -79,7 +73,6 @@ class GobangController extends Spine.Controller
     else if @position == -1
       @readyEl.addClass("disabled")
       @cancel_readyEl.addClass("disabled")
-
 
   member_list: (message) ->
     members = message.members
@@ -95,7 +88,6 @@ class GobangController extends Spine.Controller
     for watcher in watchers
       html += watcher
     @watchersEl.html html
-
 
   update_turn: (message) ->
     @turn = message.turn
@@ -123,7 +115,6 @@ class GobangController extends Spine.Controller
     @player2El.removeClass("turn")
     @cancel_readyEl.hide()
     @readyEl.show()
-
 
   ready: ->
     @ws.send JSON.stringify(type: "ready")
