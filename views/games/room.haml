@@ -2,6 +2,8 @@
 %link{:href => "/assets/#{@game.style_name}.css", :rel => "stylesheet"}/
 
 .row-fluid{class: @game.style_name}
+  .span9.well
+    #game_pool
   .span3
     #buttons.well
       %button.btn.btn-success.btn-block#ready READY
@@ -14,6 +16,4 @@
       / watchers
     .well
       %a.btn.btn-danger.btn-block{href: "/games/#{@game.path}"} BACK TO HALL
-  .span9.well
-    #game_pool
 #chat
