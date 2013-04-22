@@ -82,6 +82,14 @@
   right: 10px;
 }
 
+.turn  {
+  -webkit-transition: all 30.0s linear !important;
+     -moz-transition: all 30.0s linear !important;
+       -o-transition: all 30.0s linear !important;
+          transition: all 30.0s linear !important;
+}
+
+
 /*.room:hover {
   -webkit-box-shadow: 0 1px 4px rgba(0,105,214,0.5);
   -moz-box-shadow: 0 1px 4px rgba(0,105,214,0.5);

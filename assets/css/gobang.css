@@ -41,14 +41,6 @@
   margin-top: 0px;
 }
 
-.turn {
-  background-color: red;
-}
-
 .ready {
   background-color: green;
-}
-
-.myself {
-  border: 5px solid black;
 }

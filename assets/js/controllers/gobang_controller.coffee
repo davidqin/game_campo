@@ -65,11 +65,9 @@ class GobangController extends Spine.Controller
     if @position == 1
       @myself   = @player1El
       @opponent = @player2El
-      @player1El.addClass('myself')
     else if @position == 2
       @myself   = @player2El
       @opponent = @player1El
-      @player2El.addClass('myself')
     else if @position == -1
       @readyEl.addClass("disabled")
       @cancel_readyEl.addClass("disabled")
@@ -92,11 +90,11 @@ class GobangController extends Spine.Controller
   update_turn: (message) ->
     @turn = message.turn
     if @turn == 2
-      @player1El.removeClass("turn")
-      @player2El.addClass("turn")
+      @player1El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
+      @player2El.find('.bar').addClass("turn").css('width', 0).css('background-color', "red")
     else if @turn == 1
-      @player1El.addClass("turn")
-      @player2El.removeClass("turn")
+      @player2El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
+      @player1El.find('.bar').addClass("turn").css('width', 0).css('background-color', "red")
 
   game_start: ->
     @game_is_start = true
@@ -111,8 +109,8 @@ class GobangController extends Spine.Controller
   game_over: (message) ->
     alert "game_over, winner is #{message.winner}"
     @game_is_start = false
-    @player1El.removeClass("turn")
-    @player2El.removeClass("turn")
+    @player1El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
+    @player2El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
     @cancel_readyEl.hide()
     @readyEl.show()
 

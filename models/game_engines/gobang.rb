@@ -53,7 +53,7 @@ class Gobang
     end
   end
 
-  attr_accessor :id, :player1, :player2, :watchers, :chess_board, :turn, :is_start
+  attr_accessor :id, :player1, :player2, :watchers, :chess_board, :turn, :is_start, :timer
 
   def initialize id
     self.id          = id
@@ -155,11 +155,20 @@ class Gobang
     self.turn     = player1
     chess_board_reset
     broadcast type: :game_start
+    reset_time_left
     broadcast_turn
     puts "#{id} begin!"
   end
 
+  def reset_time_left
+    winner = self.turn == player1 ? player2 : player1
+    EM.cancel_timer(self.timer)
+    self.timer = EM.add_timer(30) { game_over winner }
+  end
+
   def game_over winner
+    EM.cancel_timer(self.timer)
+
     player1.is_ready = false if player1
     player2.is_ready = false if player2
     broadcast_players_status
@@ -180,6 +189,7 @@ class Gobang
   def change_turn
     self.turn = self.turn == player1 ? player2 : player1
     broadcast_turn
+    reset_time_left
   end
 
   def broadcast_turn
