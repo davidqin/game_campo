@@ -100,7 +100,6 @@ class GobangController extends Spine.Controller
     @game_is_start = true
     @player1El.removeClass("ready")
     @player2El.removeClass("ready")
-    @player1El.addClass("turn")
     @reset_game()
 
   reset_game: ->
