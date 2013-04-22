@@ -38,6 +38,8 @@ class GobangController extends Spine.Controller
         @update_turn message
       else if message.type && message.type == "game_over"
         @game_over(message)
+      else if message.type && message.type == "error"
+        alert message.message
 
   players_status: (message) ->
     if message.player1

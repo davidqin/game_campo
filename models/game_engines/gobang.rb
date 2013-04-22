@@ -13,6 +13,20 @@ class Gobang
       player = Player.new(user, websocket)
       game   = find_or_create(Gobang::Perfix + custom_string)
 
+      if game.has_player?(player)
+
+        websocket.onopen do
+          websocket.send JSON(type: :error, message: "You are already in this room somewhere else, the websocket is closing.")
+          EM.add_periodic_timer(5) { websocket.close_connection }
+        end
+
+        websocket.onclose do
+          puts "#{player.email} websocket close because multi connections!"
+        end
+
+        return
+      end
+
       websocket.onopen do
         game.add(player)
         puts "#{user.email} JOIN #{game.id}"
@@ -44,6 +58,18 @@ class Gobang
   def initialize id
     self.id          = id
     self.watchers    = []
+  end
+
+  def has_player? player
+    if self.player1 == player or self.player2 == player
+      return true
+    end
+
+    self.watchers.each do |watcher|
+      return true if watcher == player
+    end
+
+    false
   end
 
   def add player
