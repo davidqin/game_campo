@@ -7,6 +7,10 @@
 .mt20 {margin-top: 20px;}
 .mt30 {margin-top: 30px;}
 
+.well {
+  padding: 10px;
+}
+
 .box {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -25,7 +29,7 @@
 
 .room {
   position: relative;
-  height: 270px;
+  height: 200px;
 }
 
 .player {

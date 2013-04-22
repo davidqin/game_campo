@@ -81,8 +81,8 @@ class GobangController extends Spine.Controller
     player2 = members.player2
     watchers = members.watchers
 
-    @player1El.html player1
-    @player2El.html player2
+    @player1El.find(".media-heading").html(player1)
+    @player2El.find(".media-heading").html(player2)
     html = ""
 
     for watcher in watchers
