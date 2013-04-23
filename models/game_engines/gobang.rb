@@ -76,15 +76,12 @@ class Gobang
     if not self.player1
       self.player1 = player
       player.position = 1
-      player1.send type: :set_position, position: 1
     elsif not self.player2
       self.player2 = player
       player.position = 2
-      player2.send type: :set_position, position: 2
     else
       self.watchers << player
       player.position = -1
-      player.send type: :set_position, position: -1
     end
 
     broadcast_member_list
@@ -112,6 +109,7 @@ class Gobang
   def ready player, msg_hash
     return if self.is_start
     return if player.is_ready
+    return if player.position == -1
 
     player.is_ready = true
 
@@ -125,6 +123,7 @@ class Gobang
   def cancel_ready player, msg_hash
     return if self.is_start
     return unless player.is_ready
+    return if player.position == -1
 
     player.is_ready = false
     player.send type: :cancel_ready_success
@@ -133,7 +132,7 @@ class Gobang
   end
 
   def chat player, msg_hash
-    broadcast type: :chat_message, message: msg_hash["message"], position: player.position
+    broadcast type: :show_chat_message, message: msg_hash["message"], position: player.position
   end
 
   def put_piece player, msg_hash
@@ -147,7 +146,9 @@ class Gobang
 
     chess_board[x][y] = player.position
 
-    broadcast type: :put_piece, x: msg_hash["x"], y: msg_hash["y"]
+    color = player.position == 1 ? "black" : "white"
+
+    broadcast type: :update_chessboard, x: msg_hash["x"], y: msg_hash["y"], color: color
 
     change_turn
 
@@ -173,12 +174,12 @@ class Gobang
   def game_over winner
     EM.cancel_timer(self.timer)
 
+    self.is_start = false
+    broadcast type: :game_over, winner: winner.try(:email)
+
     player1.is_ready = false if player1
     player2.is_ready = false if player2
     broadcast_players_status
-
-    self.is_start = false
-    broadcast type: :game_over, winner: winner.try(:email)
   end
 
   def chess_board_reset
@@ -209,11 +210,11 @@ class Gobang
   end
 
   def broadcast_players_status
-    broadcast type: :players_status, player1: player1.try(:is_ready), player2: player2.try(:is_ready)
+    broadcast type: :update_players_status, player1: player1.try(:is_ready), player2: player2.try(:is_ready)
   end
 
   def broadcast_member_list
-    broadcast type: :member_list, members: {
+    broadcast type: :update_member_list, members: {
       player1: player1.try(:email),
       player2: player2.try(:email),
       watchers: watchers.map{ |watcher| watcher.email }

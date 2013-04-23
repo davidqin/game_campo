@@ -1,7 +1,7 @@
 %script{:src => "/assets/#{@game.style_name}.js", :type => "text/javascript"}
 %link{:href => "/assets/#{@game.style_name}.css", :rel => "stylesheet"}/
 .row-fluid{class: @game.style_name}
-  .span3
+  .span4
     #buttons.well
       %button.btn.btn-success.btn-block#ready READY
       %button.btn.btn-warning.btn-block#cancel_ready CANCEL READY
@@ -14,5 +14,4 @@
     #watchers.well
     .well
       %a.btn.btn-danger.btn-block{href: "/games/#{@game.path}"} BACK TO HALL
-  .span9
-    #game_pool
+  #game_pool.span8
