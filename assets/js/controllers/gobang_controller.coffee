@@ -1,3 +1,9 @@
+#= require views/player
+#= require views/no_player
+#= require views/watchers
+
+PlayersController  = @GC.controllers.PlayersController
+
 class GobangController extends Spine.Controller
   events:
     "click #ready":         "ready"
@@ -16,9 +22,12 @@ class GobangController extends Spine.Controller
 
   constructor: ->
     super
+    # @players_controller = new PlayersController(el: $('.span3'))
     @game_is_start = false
     @draw_chessboard()
     @ws = new WebSocket('ws://' + window.location.host + window.location.pathname)
+    @player1El.html JST['views/no_player']
+    @player2El.html JST['views/no_player']
 
     @order_set =
       "set_position":          @set_position
@@ -81,13 +90,17 @@ class GobangController extends Spine.Controller
     player2 = members.player2
     watchers = members.watchers
 
-    @player1El.find(".media-heading").html(player1)
-    @player2El.find(".media-heading").html(player2)
-    html = ""
+    if player1
+      @player1El.html JST['views/player'](email: player1)
+    else
+      @player1El.html JST['views/no_player']
 
-    for watcher in watchers
-      html += watcher
-    @watchersEl.html html
+    if player2
+      @player2El.html JST['views/player'](email: player2) if player2
+    else
+      @player2El.html JST['views/no_player']
+
+    @watchersEl.html JST['views/watchers'](watchers: watchers)
 
   update_turn: (message) ->
     @turn = message.turn

@@ -12,6 +12,8 @@ gem 'pry'
 
 gem 'haml'
 
+gem 'eco', '1.0.0'
+
 gem 'activerecord', '3.2.12'
 
 gem 'sqlite3', '1.3.7'

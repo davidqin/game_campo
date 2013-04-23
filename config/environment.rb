@@ -3,6 +3,7 @@ require 'sqlite3'
 require 'logger'
 require 'rack/coffee'
 require 'active_record'
+require 'eco'
 require 'pry'
 
 class Object
