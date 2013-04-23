@@ -5,6 +5,10 @@
     #buttons.well
       %button.btn.btn-success.btn-block#ready READY
       %button.btn.btn-warning.btn-block#cancel_ready CANCEL READY
+    .well
+      %form#chat
+        %input.input-large{type: :text, placeholder: :message}
+        %button.btn{type: :submit} Send
     #player1.well
       .media
         %a.pull-left{:href => "#"}
@@ -33,4 +37,3 @@
       %a.btn.btn-danger.btn-block{href: "/games/#{@game.path}"} BACK TO HALL
   .span9
     #game_pool
-#chat

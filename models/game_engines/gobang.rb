@@ -132,6 +132,10 @@ class Gobang
     broadcast_players_status
   end
 
+  def chat player, msg_hash
+    broadcast type: :chat_message, message: msg_hash["message"], position: player.position
+  end
+
   def put_piece player, msg_hash
     return unless self.is_start
     return unless player == turn

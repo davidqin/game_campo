@@ -4,6 +4,7 @@ class GobangController extends Spine.Controller
     "click #cancel_ready":  "cancel_ready"
     "click .hole":          "put_piece"
     "touchend .hole":       "put_piece"
+    "submit form#chat":     "send_chat_message"
 
   elements:
     "#ready":        "readyEl"
@@ -22,13 +23,14 @@ class GobangController extends Spine.Controller
     @order_set =
       "set_position":          @set_position
       "game_start":            @game_start
+      "game_over":             @game_over
       "ready_success":         @ready_success
       "cancel_ready_success":  @cancel_ready_success
       "member_list":           @member_list
       "players_status":        @players_status
       "put_piece":             @update_chessboard
       "update_turn":           @update_turn
-      "game_over":             @game_over
+      "chat_message":          @show_chat_message
       "error":                 (options) -> alert options.message
 
     @ws.onmessage = (msg_string) =>
@@ -125,6 +127,16 @@ class GobangController extends Spine.Controller
 
     hole =  $(event.target)
     @ws.send JSON.stringify {type: "put_piece", x: hole.attr("x"), y: hole.attr("y")}
+
+  send_chat_message: (event) ->
+    event.preventDefault()
+    value = $(event.target).find('input').val()
+    if value
+      @ws.send JSON.stringify(type: "chat", message: value)
+
+  show_chat_message: (message) ->
+    $('#chat input').val("")
+    console.log message.message + message.position
 
   my_turn: ->
     @turn == @position
