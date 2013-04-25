@@ -28,7 +28,7 @@ class Gobang
       end
 
       websocket.onopen do
-        game.add(player)
+        game.enter(player)
         puts "#{user.email} JOIN #{game.id}"
       end
 
@@ -72,38 +72,51 @@ class Gobang
     false
   end
 
-  def add player
+  def enter player
     if not self.player1
-      self.player1 = player
-      player.position = 1
+      add_player player, :player1
     elsif not self.player2
-      self.player2 = player
-      player.position = 2
+      add_player player, :player2
     else
-      self.watchers << player
-      player.position = -1
+      add_player player, :watcher
     end
 
     broadcast_member_list
   end
 
   def left player
+    remove_player player
+    broadcast_member_list
+  end
+
+  def add_player player, position
+    case position
+    when :player1
+      self.player1 = player
+      player.position = 1
+    when :player2
+      self.player2 = player
+      player.position = 2
+    when :watcher
+      self.watchers << player
+      player.position = -1
+    end
+  end
+
+  def remove_player player
     if self.player1 == player
       self.player1 = nil
-      broadcast_member_list
       game_over player2 if self.is_start
       return
     end
 
     if self.player2 == player
       self.player2 = nil
-      broadcast_member_list
       game_over player1 if self.is_start
       return
     end
 
     watchers.delete player
-    broadcast_member_list
   end
 
   def ready player, msg_hash
@@ -135,6 +148,19 @@ class Gobang
     return if player.position == -1
 
     broadcast type: :show_chat_message, message: msg_hash["message"], position: player.position
+  end
+
+  def move player, msg_hash
+    return if self.is_start
+    target = msg_hash["target"]
+    destination_player = send(target)
+    if not destination_player
+      remove_player player
+      add_player    player, target.to_sym
+    end
+
+    broadcast_member_list
+    broadcast_players_status
   end
 
   def put_piece player, msg_hash

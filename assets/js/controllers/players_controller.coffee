@@ -15,6 +15,7 @@ class PlayersController extends Spine.Controller
     super
 
     @game = @options.game
+    @ws   = @options.ws
 
     @game.bind "game_start",            @game_start
     @game.bind "game_over",             @reset_players_time_bar
@@ -29,7 +30,7 @@ class PlayersController extends Spine.Controller
   # no actions
 
   move: (event) ->
-    console.log  $(event.target).parents('.player')
+    @ws.send JSON.stringify type: "move", target: $(event.target).parents('.player').data('player')
 
   # event trigger callbacks
 
@@ -38,6 +39,9 @@ class PlayersController extends Spine.Controller
     @player2El.find('.label').removeClass("label-success").addClass("label-important").html("Fighting!")
 
   reset_players_time_bar: =>
+    @player1El.find('.label').removeClass("label-important")
+    @player2El.find('.label').removeClass("label-important")
+
     @player1El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
     @player2El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
 

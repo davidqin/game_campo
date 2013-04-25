@@ -32,7 +32,7 @@ class GobangController extends Spine.Controller
 
     @ws = new WebSocket('ws://' + window.location.host + window.location.pathname)
 
-    new PlayersController el: $('.span4'), game: @
+    new PlayersController el: $('.span4'), game: @, ws: @ws
     new ChatController    el: $('.span4'), game: @, ws: @ws
 
     @ws.onmessage = (msg_string) =>
