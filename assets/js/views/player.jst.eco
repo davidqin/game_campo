@@ -4,6 +4,9 @@
   </a>
   <div class="media-body">
     <h4 class="media-heading"><%= @email%></h4>
+    <div class="media">
+      <span class="label">Not Ready</span>
+    </div>
   </div>
 </div>
 <div class="progress progress-striped active mt20">

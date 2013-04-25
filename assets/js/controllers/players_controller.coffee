@@ -16,7 +16,7 @@ class PlayersController extends Spine.Controller
 
     @game = @options.game
 
-    @game.bind "game_start",            @remove_players_ready_status
+    @game.bind "game_start",            @game_start
     @game.bind "game_over",             @reset_players_time_bar
     @game.bind "update_member_list",    @update_member_list
     @game.bind "update_players_status", @update_players_status
@@ -33,9 +33,9 @@ class PlayersController extends Spine.Controller
 
   # event trigger callbacks
 
-  remove_players_ready_status: =>
-    @player1El.removeClass("ready")
-    @player2El.removeClass("ready")
+  game_start: =>
+    @player1El.find('.label').removeClass("label-success").addClass("label-important").html("Fighting!")
+    @player2El.find('.label').removeClass("label-success").addClass("label-important").html("Fighting!")
 
   reset_players_time_bar: =>
     @player1El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
@@ -65,14 +65,14 @@ class PlayersController extends Spine.Controller
     player2 = options.player2
 
     if player1
-      @player1El.addClass("ready")
+      @player1El.find('.label').addClass("label-success").html("Ready")
     else
-      @player1El.removeClass("ready")
+      @player1El.find('.label').removeClass("label-success").html("Not Ready")
 
     if player2
-      @player2El.addClass("ready")
+      @player2El.find('.label').addClass("label-success").html("Ready")
     else
-      @player2El.removeClass("ready")
+      @player2El.find('.label').removeClass("label-success").html("Not Ready")
 
   change_turn: (options) =>
     turn = options.turn
