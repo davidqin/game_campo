@@ -10,16 +10,7 @@ class Gobang
       game   = find_or_create(Gobang::Perfix + custom_string)
 
       if game.has_player?(player)
-
-        websocket.onopen do
-          websocket.send JSON(type: :error, message: "You are already in this room somewhere else, the websocket is closing.")
-          EM.add_timer(5) { websocket.close_connection }
-        end
-
-        websocket.onclose do
-          puts "#{player.email} websocket close because multi connections!"
-        end
-
+        close_redundant_websocket websocket
         return
       end
 
@@ -37,6 +28,17 @@ class Gobang
       websocket.onclose do
         game.left(player)
         puts "#{user.email} LEFT #{game.id}"
+      end
+    end
+
+    def close_redundant_websocket websocket
+      websocket.onopen do
+        websocket.send JSON(type: :error, message: "You are already in this room somewhere else, the websocket is closing.")
+        EM.add_timer(5) { websocket.close_connection }
+      end
+
+      websocket.onclose do
+        puts "#{player.email} websocket close because multi connections!"
       end
     end
 
@@ -266,9 +268,9 @@ class Gobang
 
   def check_win x, y, player
     win = (check_line(x, y,  1, 0) or
-           check_line(x, y, -1, 1) or
-           check_line(x, y,  0, 1) or
-           check_line(x, y,  1, 1))
+     check_line(x, y, -1, 1) or
+     check_line(x, y,  0, 1) or
+     check_line(x, y,  1, 1))
 
     game_over player if win
   end
