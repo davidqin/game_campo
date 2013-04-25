@@ -13,7 +13,7 @@ class Gobang
 
         websocket.onopen do
           websocket.send JSON(type: :error, message: "You are already in this room somewhere else, the websocket is closing.")
-          EM.add_periodic_timer(5) { websocket.close_connection }
+          EM.add_timer(5) { websocket.close_connection }
         end
 
         websocket.onclose do
