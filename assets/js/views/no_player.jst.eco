@@ -1,1 +1,1 @@
-<button class="btn btn-block move-here">Move Here</button>
+<button class="btn btn-block move-here">Move Here(<%= @message %>)</button>

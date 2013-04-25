@@ -1,0 +1,18 @@
+<div id="game_over_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-body">
+    <h1>Game Over</h1>
+    <% if @result == "winner": %>
+      <img src="/assets/gobang/winner.png">
+      <p>Congratulations! You are the winner!!</p>
+    <% else if @result == "loser": %>
+      <img src="/assets/gobang/loser.png">
+      <p>What a pity! You almost win!!</p>
+    <% else: %>
+      <img src="/assets/gobang/game_over.png">
+    <% end %>
+
+    <% if @message: %>
+      <p><%= @message %> </p>
+    <% end %>
+  </div>
+</div>

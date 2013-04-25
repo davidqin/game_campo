@@ -1,9 +1,5 @@
 class Gobang
 
-  # ready
-  # cancel_ready
-  # put_piece
-
   Perfix = "gobang-"
 
   @@games = {}
@@ -89,8 +85,8 @@ class Gobang
     broadcast_member_list
   end
 
-  def add_player player, position
-    case position
+  def add_player player, player_type
+    case player_type
     when :player1
       self.player1 = player
       player.position = 1
@@ -106,13 +102,13 @@ class Gobang
   def remove_player player
     if self.player1 == player
       self.player1 = nil
-      game_over player2 if self.is_start
+      game_over player2, "#{player.email} LEFT the Room!" if self.is_start
       return
     end
 
     if self.player2 == player
       self.player2 = nil
-      game_over player1 if self.is_start
+      game_over player1, "#{player.email} LEFT the Room!" if self.is_start
       return
     end
 
@@ -152,12 +148,14 @@ class Gobang
 
   def move player, msg_hash
     return if self.is_start
+
     target = msg_hash["target"]
     destination_player = send(target)
-    if not destination_player
-      remove_player player
-      add_player    player, target.to_sym
-    end
+
+    return if destination_player
+
+    remove_player player
+    add_player    player, target.to_sym
 
     broadcast_member_list
     broadcast_players_status
@@ -178,9 +176,9 @@ class Gobang
 
     broadcast type: :update_chessboard, x: msg_hash["x"], y: msg_hash["y"], color: color
 
-    change_turn
-
     check_win x, y, player
+
+    change_turn
   end
 
   def game_start
@@ -199,14 +197,23 @@ class Gobang
     self.timer = EM.add_timer(30) { game_over winner }
   end
 
-  def game_over winner
+  def game_over winner, message = nil
     EM.cancel_timer(self.timer)
 
-    self.is_start = false
-    broadcast type: :game_over, winner: winner.try(:email)
+    loser = winner == player1 ? player2 : player1
+
+    winner.send type: :game_over, result: :winner, message: message if winner
+    loser.send  type: :game_over, result: :loser,  message: message if loser
+
+    message_for_watchers = message.nil? ? "Winner is #{winner.email}" : message
+
+    broadcast_watchers type: :game_over, message: message_for_watchers
 
     player1.is_ready = false if player1
     player2.is_ready = false if player2
+
+    self.is_start = false
+
     broadcast_players_status
   end
 
@@ -220,6 +227,8 @@ class Gobang
   end
 
   def change_turn
+    return unless self.is_start
+
     self.turn = self.turn == player1 ? player2 : player1
     broadcast_turn
     reset_time_left
@@ -233,6 +242,12 @@ class Gobang
     EM.next_tick do
       player1.send(msg_hash) if player1
       player2.send(msg_hash) if player2
+      watchers.each { |watcher| watcher.send(msg_hash) }
+    end
+  end
+
+  def broadcast_watchers msg_hash
+    EM.next_tick do
       watchers.each { |watcher| watcher.send(msg_hash) }
     end
   end

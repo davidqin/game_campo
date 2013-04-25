@@ -25,6 +25,8 @@
                   %li
                     - Game.all.each do |g|
                       =link_to "/games/" + g.path, g.name
+              %li
+                %a{href: "http://github.com/davidqin/game_campo", target: "_blank"} Source Code
             %ul.nav.pull-right
               %li.divider-vertical
               - if not @current_user

@@ -1,6 +1,8 @@
 #= require controllers/players_controller
 #= require controllers/chat_controller
 
+#= require views/game_over
+
 PlayersController = @GC.controllers.PlayersController
 ChatController    = @GC.controllers.ChatController
 
@@ -67,7 +69,12 @@ class GobangController extends Spine.Controller
     $('td').removeClass("white").removeClass("black").removeClass("hole").addClass("hole")
 
   game_over: (message) ->
-    alert "game_over, winner is #{message.winner}"
+    result = message.result
+    message = message.message
+
+    $('body').append(JST['views/game_over'](result: result, message: message))
+    $('#game_over_modal').modal("show").on 'hidden', -> $(@).remove()
+
     @game_is_start = false
     @cancel_readyEl.hide()
     @readyEl.show()

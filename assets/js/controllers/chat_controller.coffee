@@ -10,7 +10,7 @@ class ChatController extends Spine.Controller
     @game = @options.game
     @ws   = @options.ws
 
-    @game.bind "show_chat_message", @show_chat_message
+    @game.bind "show_chat_message", @reset_chat_input
 
   # actions
 
@@ -22,8 +22,7 @@ class ChatController extends Spine.Controller
 
   # event trigger callbacks
 
-  show_chat_message: (message) =>
+  reset_chat_input: (message) =>
     @chat_inputEl.val("")
-    console.log message.message + message.position
 
 @GC.controllers.ChatController = ChatController

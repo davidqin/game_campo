@@ -40,3 +40,7 @@
   display: none;
   margin-top: 0px;
 }
+
+.modal-body{
+  text-align: center;
+}

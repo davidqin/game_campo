@@ -8,6 +8,14 @@ class Player
   end
 
   def == player
+    if self.nil?
+      return false
+    end
+
+    if player.nil?
+      return false
+    end
+
     self.user == player.user
   end
 

@@ -24,8 +24,8 @@ class PlayersController extends Spine.Controller
     @game.bind "update_turn",           @change_turn
     @game.bind "show_chat_message",     @member_speak
 
-    @player1El.html JST['views/no_player']
-    @player2El.html JST['views/no_player']
+    @player1El.html JST['views/no_player'] message: "Player1"
+    @player2El.html JST['views/no_player'] message: "Player2"
 
   # no actions
 
@@ -55,12 +55,12 @@ class PlayersController extends Spine.Controller
     if player1
       @player1El.html JST['views/player'](email: player1)
     else
-      @player1El.html JST['views/no_player']
+      @player1El.html JST['views/no_player'] message: "Player1"
 
     if player2
       @player2El.html JST['views/player'](email: player2) if player2
     else
-      @player2El.html JST['views/no_player']
+      @player2El.html JST['views/no_player'] message: "Player2"
 
     @watchersEl.html JST['views/watchers'](watchers: watchers)
 
