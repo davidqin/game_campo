@@ -4,7 +4,7 @@
   </a>
   <div class="media-body">
     <h4 class="media-heading"><%= @player.email%></h4>
-    <div class="media">
+    <div class="status">
       <% if @player.is_ready: %>
         <span class="label label-success">Ready</span>
       <% else: %>

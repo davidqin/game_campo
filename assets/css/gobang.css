@@ -40,6 +40,10 @@ form#chat {
   margin-bottom: 0;
 }
 
+.gobang .status {
+  margin-top: 15px;
+}
+
 #cancel_ready{
   display: none;
   margin-top: 0px;

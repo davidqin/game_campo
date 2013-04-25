@@ -17,7 +17,7 @@ class PlayersController extends Spine.Controller
     @ws   = @options.ws
 
     @game.bind "game_start",            @game_start
-    @game.bind "game_over",             @reset_players_time_bar
+    @game.bind "game_over",             @reset_players
     @game.bind "update_players_status", @update_players_status
     @game.bind "update_turn",           @change_turn
     @game.bind "show_chat_message",     @member_speak
@@ -41,30 +41,15 @@ class PlayersController extends Spine.Controller
     @player1El.find('.label').removeClass("label-success").addClass("label-important").html("Fighting!")
     @player2El.find('.label').removeClass("label-success").addClass("label-important").html("Fighting!")
 
-  reset_players_time_bar: =>
+  reset_players: =>
     @player1El.find('.label').removeClass("label-important")
     @player2El.find('.label').removeClass("label-important")
 
     @player1El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
     @player2El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
 
-  update_member_list: (options) =>
-    members = options.members
-
-    player1  = members.player1
-    player2  = members.player2
-    watchers = members.watchers
-
-    if player1
-      @player1El.html JST['views/player'](email: player1)
-    else
-      @player1El.html JST['views/no_player'] message: "Player1"
-
-    if player2
-      @player2El.html JST['views/player'](email: player2) if player2
-    else
-      @player2El.html JST['views/no_player'] message: "Player2"
-
+    @player1El.find('.status .label-info').remove()
+    @player2El.find('.status .label-info').remove()
 
   update_players_status: (options) =>
     player1 = options.player1
@@ -84,10 +69,17 @@ class PlayersController extends Spine.Controller
     turn = options.turn
     if turn == 2
       @player1El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
+      @player1El.find('.status .label-info').remove()
+
+
       @player2El.find('.bar').addClass("turn").css('width', 0).css('background-color', "red")
+      @player2El.find('.status').append('<span class="label label-info">MyTurn</span>')
     else if turn == 1
       @player2El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
+      @player2El.find('.status .label-info').remove()
+
       @player1El.find('.bar').addClass("turn").css('width', 0).css('background-color', "red")
+      @player1El.find('.status').append('<span class="label label-info">MyTurn</span>')
 
   member_speak: (options) =>
     position = options.position
