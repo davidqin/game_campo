@@ -1,6 +1,5 @@
 #= require views/player
 #= require views/no_player
-#= require views/watchers
 
 class PlayersController extends Spine.Controller
   elements:
@@ -19,10 +18,14 @@ class PlayersController extends Spine.Controller
 
     @game.bind "game_start",            @game_start
     @game.bind "game_over",             @reset_players_time_bar
-    @game.bind "update_member_list",    @update_member_list
     @game.bind "update_players_status", @update_players_status
     @game.bind "update_turn",           @change_turn
     @game.bind "show_chat_message",     @member_speak
+
+    @game.bind "add_player",            @add_player
+    @game.bind "remove_player",         @remove_player
+    @game.bind "add_watcher",           @add_watcher
+    @game.bind "remove_watcher",        @remove_watcher
 
     @player1El.html JST['views/no_player'] message: "Player1"
     @player2El.html JST['views/no_player'] message: "Player2"
@@ -62,7 +65,6 @@ class PlayersController extends Spine.Controller
     else
       @player2El.html JST['views/no_player'] message: "Player2"
 
-    @watchersEl.html JST['views/watchers'](watchers: watchers)
 
   update_players_status: (options) =>
     player1 = options.player1
@@ -105,5 +107,31 @@ class PlayersController extends Spine.Controller
     player.find('img').popover("show")
     player.data "time-out", (setTimeout clear_popover, 3000)
 
+  add_player: (options) =>
+    player = options.player
+    playerEl = @["player#{player.position}El"]
+    playerEl.html JST['views/player'](player: player)
+
+  remove_player: (options) =>
+    player = options.player
+    playerEl = @["player#{player.position}El"]
+    playerEl.html JST['views/no_player'] message: "Player#{player.position}"
+
+  add_watcher: (options) =>
+    watcher = options.watcher
+
+    watcherEl = @watchersEl.find("p[data-email='#{watcher.email}']")
+
+    if watcherEl.size() == 0
+      @watchersEl.append("<p data-email=\"#{watcher.email}\">#{watcher.email}</p>")
+      if @watchersEl.children().size() > 0
+        @watchersEl.addClass('well')
+
+  remove_watcher: (options) =>
+    watcher = options.watcher
+    @watchersEl.find("p[data-email='#{watcher.email}']").remove()
+
+    if @watchersEl.children().size() == 0
+        @watchersEl.removeClass('well')
 
 @GC.controllers.PlayersController = PlayersController

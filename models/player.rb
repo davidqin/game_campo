@@ -28,4 +28,8 @@ class Player
       websocket.send JSON(msg_hash)
     end
   end
+
+  def to_params
+    { email: self.user.email, position: self.position, is_ready: self.is_ready }
+  end
 end

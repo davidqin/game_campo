@@ -1,7 +1,0 @@
-<% if @watchers.length: %>
-  <div class="well">
-    <% for watcher in @watchers: %>
-      <p><%= watcher %></p>
-    <% end %>
-  </div>
-<% end %>

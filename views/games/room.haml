@@ -5,13 +5,13 @@
     #buttons.well
       %button.btn.btn-success.btn-block#ready READY
       %button.btn.btn-warning.btn-block#cancel_ready CANCEL READY
-    #player1.player.well{"data-player" => "player1"}
-    #player2.player.well{"data-player" => "player2"}
     .well
       %form.form-inline#chat
-        %legend chat
         %input.span9{type: :text, placeholder: :message}
         %button.btn{type: :submit} Send
+    #player1.player.well{"data-player" => "player1"}
+    #player2.player.well{"data-player" => "player2"}
+
     #watchers
     .well
       %a.btn.btn-danger.btn-block{href: "/games/#{@game.path}"} BACK TO HALL

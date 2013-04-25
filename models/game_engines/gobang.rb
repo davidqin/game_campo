@@ -37,9 +37,7 @@ class Gobang
         EM.add_timer(5) { websocket.close_connection }
       end
 
-      websocket.onclose do
-        puts "#{player.email} websocket close because multi connections!"
-      end
+      websocket.onclose do; end
     end
 
     def find_or_create id
@@ -79,42 +77,56 @@ class Gobang
       add_player player, :watcher
     end
 
-    broadcast_member_list
+    send_room_member_list_to player
   end
 
   def left player
     remove_player player
-    broadcast_member_list
   end
 
   def add_player player, player_type
     case player_type
     when :player1
-      self.player1 = player
       player.position = 1
+      self.player1 = player
+      broadcast type: :add_player, player: player.to_params
     when :player2
-      self.player2 = player
       player.position = 2
+      self.player2 = player
+      broadcast type: :add_player, player: player.to_params
     when :watcher
-      self.watchers << player
       player.position = -1
+      self.watchers << player
+      broadcast type: :add_watcher, watcher: player.to_params
     end
   end
 
   def remove_player player
     if self.player1 == player
       self.player1 = nil
+      broadcast type: :remove_player, player: player.to_params
       game_over player2, "#{player.email} LEFT the Room!" if self.is_start
       return
     end
 
     if self.player2 == player
       self.player2 = nil
+      broadcast type: :remove_player, player: player.to_params
       game_over player1, "#{player.email} LEFT the Room!" if self.is_start
       return
     end
 
     watchers.delete player
+    broadcast type: :remove_watcher, watcher: player.to_params
+  end
+
+  def send_room_member_list_to player
+    player.send type: :add_player, player: player1.to_params if player1
+    player.send type: :add_player, player: player2.to_params if player2
+
+    watchers.each do |watcher|
+      player.send type: :add_watcher, watcher: watcher.to_params
+    end
   end
 
   def ready player, msg_hash
@@ -157,10 +169,9 @@ class Gobang
     return if destination_player
 
     remove_player player
-    add_player    player, target.to_sym
+    player.send type: :remove_player, player: player.to_params
 
-    broadcast_member_list
-    broadcast_players_status
+    add_player player, target.to_sym
   end
 
   def put_piece player, msg_hash
@@ -256,14 +267,6 @@ class Gobang
 
   def broadcast_players_status
     broadcast type: :update_players_status, player1: player1.try(:is_ready), player2: player2.try(:is_ready)
-  end
-
-  def broadcast_member_list
-    broadcast type: :update_member_list, members: {
-      player1: player1.try(:email),
-      player2: player2.try(:email),
-      watchers: watchers.map{ |watcher| watcher.email }
-    }
   end
 
   def check_win x, y, player

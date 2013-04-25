@@ -36,6 +36,10 @@
   background-image: url(/assets/gobang/black.png);
 }
 
+form#chat {
+  margin-bottom: 0;
+}
+
 #cancel_ready{
   display: none;
   margin-top: 0px;

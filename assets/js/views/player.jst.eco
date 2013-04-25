@@ -3,9 +3,13 @@
     <img class="media-object img-circle" src="/assets/portrait.jpg" style="width:64px;height:64px;">
   </a>
   <div class="media-body">
-    <h4 class="media-heading"><%= @email%></h4>
+    <h4 class="media-heading"><%= @player.email%></h4>
     <div class="media">
-      <span class="label">Not Ready</span>
+      <% if @player.is_ready: %>
+        <span class="label label-success">Ready</span>
+      <% else: %>
+        <span class="label">Not Ready</span>
+      <% end %>
     </div>
   </div>
 </div>
