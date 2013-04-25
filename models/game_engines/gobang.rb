@@ -132,6 +132,8 @@ class Gobang
   end
 
   def chat player, msg_hash
+    return if player.position == -1
+
     broadcast type: :show_chat_message, message: msg_hash["message"], position: player.position
   end
 

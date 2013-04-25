@@ -1,1 +1,1 @@
-<span>no_player</span>
+<button class="btn btn-block move-here">Move Here</button>

@@ -6,7 +6,10 @@ class PlayersController extends Spine.Controller
   elements:
     '#player1':   'player1El'
     '#player2':   'player2El'
-    "#watchers":  'watchersEl'
+    '#watchers':  'watchersEl'
+
+  events:
+    'click .move-here': 'move'
 
   constructor: ->
     super
@@ -18,12 +21,15 @@ class PlayersController extends Spine.Controller
     @game.bind "update_member_list",    @update_member_list
     @game.bind "update_players_status", @update_players_status
     @game.bind "update_turn",           @change_turn
-    # @game.bind "show_chat_message",     @member_speak
+    @game.bind "show_chat_message",     @member_speak
 
     @player1El.html JST['views/no_player']
     @player2El.html JST['views/no_player']
 
   # no actions
+
+  move: (event) ->
+    console.log  $(event.target).parents('.player')
 
   # event trigger callbacks
 
@@ -77,6 +83,23 @@ class PlayersController extends Spine.Controller
       @player2El.find('.bar').removeClass("turn").css('width', "100%").css('background-color', "")
       @player1El.find('.bar').addClass("turn").css('width', 0).css('background-color', "red")
 
-  # member_speak: (options) =>
+  member_speak: (options) =>
+    position = options.position
+    player = @["player#{position}El"]
+
+    clear_popover = =>
+      player.find('img').popover('destroy')
+      clearTimeout(player.data("time-out"))
+
+    clear_popover()
+
+    player.find('img').popover
+      trigger: "manual"
+      content: options.message
+      placement: 'bottom'
+
+    player.find('img').popover("show")
+    player.data "time-out", (setTimeout clear_popover, 3000)
+
 
 @GC.controllers.PlayersController = PlayersController
