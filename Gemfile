@@ -1,4 +1,4 @@
-source 'http://ruby.taobao.org/'
+source 'http://rubygems.org/'
 
 gem 'sinatra', '1.4.2'
 
@@ -6,7 +6,7 @@ gem 'sinatra-websocket', '0.3.0'
 
 gem 'rack-coffee', '1.0.0'
 
-gem 'therubyracer', '0.10.1'
+#gem 'therubyracer', '0.10.1'
 
 gem 'pry'
 

@@ -28,6 +28,7 @@ class GobangController extends Spine.Controller
     @bind "ready_success",        @ready_success
     @bind "cancel_ready_success", @cancel_ready_success
     @bind "update_chessboard",    @update_chessboard
+    @bind "error",                (options) -> alert options.message
 
     @ws = new WebSocket('ws://' + window.location.host + window.location.pathname)
 

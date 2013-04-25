@@ -1,10 +1,7 @@
 /*
  *= require bootstrap/bootstrap.min
- *= require bootstrap/bootstrap-responsive.min
  */
-.container {
-  max-width: 940px;
-}
+
 
 .mt10 {margin-top: 10px;}
 .mt20 {margin-top: 20px;}
