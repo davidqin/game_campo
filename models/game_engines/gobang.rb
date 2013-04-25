@@ -10,7 +10,7 @@ class Gobang
       game   = find_or_create(Gobang::Perfix + custom_string)
 
       if game.has_player?(player)
-        close_redundant_websocket websocket
+        # close_redundant_websocket websocket
         return
       end
 
