@@ -110,20 +110,15 @@ class PlayersController extends Spine.Controller
     playerEl.html JST['views/no_player'] message: "Player#{player.position}"
 
   add_watcher: (options) =>
-    watcher = options.watcher
+    # watcher = options.watcher
 
-    watcherEl = @watchersEl.find("p[data-email='#{watcher.email}']")
+    # watcherEl = @watchersEl.find("p[data-email='#{watcher.email}']")
 
-    if watcherEl.size() == 0
-      @watchersEl.append("<p data-email=\"#{watcher.email}\">#{watcher.email}</p>")
-      if @watchersEl.children().size() > 0
-        @watchersEl.addClass('well')
+    # if watcherEl.size() == 0
+    #   @watchersEl.append("<p data-email=\"#{watcher.email}\">#{watcher.email}</p>")
 
   remove_watcher: (options) =>
-    watcher = options.watcher
-    @watchersEl.find("p[data-email='#{watcher.email}']").remove()
-
-    if @watchersEl.children().size() == 0
-        @watchersEl.removeClass('well')
+    # watcher = options.watcher
+    # @watchersEl.find("p[data-email='#{watcher.email}']").remove()
 
 @GC.controllers.PlayersController = PlayersController
