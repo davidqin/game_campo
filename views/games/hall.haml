@@ -4,15 +4,12 @@
   %p
     %a.btn.btn-primary.btn-large Learn more
 
-.row-fluid#rooms
+.row
   - @game.rooms.each_slice(4) do |rooms|
-    %ul.thumbnails
-      - rooms.each do |room|
-        %li.span3
-          %a.thumbnail.room.players-2{:href => "#{@game.path}/#{room.number}"}
-            .player.player1{href: '#'}
-              %img{src: "/assets/anonymity.png"}
-              %span= room.player_1 ? room.player_1.email : "player_1"
-            .player.player2{href: '#'}
-              %img{src: "/assets/anonymity.png"}
-              %span player_2
+    - rooms.each do |room|
+      .span3.mb30
+        .tile
+          %h3.mt20.tile-title Web Oriented
+          %img.tile-image.big-illustration{:alt => "", :src => ""}/
+          %h3.tile-title Web Oriented
+          %a.btn.btn-primary.btn-large.btn-block{:href => "#{@game.path}/#{room.number}"} Join

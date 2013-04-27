@@ -1,34 +1,41 @@
 !!!
 %html
   %head
+    %meta{charset: "utf-8"}
     %title GameCampo
     %script{:src => "/assets/application.js", :type => "text/javascript"}
     %link{:href => "/assets/application.css", :rel => "stylesheet"}/
     %meta{ name: "viewport", content: "width=device-width, initial-scale=1"}/
+
   %body
-    .navbar.navbar-static-top
+    .navbar.navbar-static-top.navbar-inverse
       .navbar-inner
         .container
-          %a.btn.btn-navbar{ "data-toggle" => "collapse", "data-target" => ".nav-collapse"}
+          %button.btn.btn-navbar{"data-target" => ".nav-collapse", "data-toggle" => "collapse"}
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %a.brand{:href => "/"}
-            GameCampo
           .nav-collapse.collapse
             %ul.nav
+              %li
+                %a{:href => "/"}
+                  GameCampo
+                  %span.navbar-unread 1
               %li.dropdown
-                %a{href: "#", class: "dropdown-toggle", "data-toggle" => "dropdown"}
+                %a{:href => "#"}
                   Games List
                   %b.caret
-                %ul.dropdown-menu
+                  %span.navbar-unread 1
+                %ul
                   %li
-                    - Game.all.each do |g|
+                  - Game.all.each do |g|
+                    %li
                       =link_to "/games/" + g.path, g.name
+                  %li
               %li
                 %a{href: "http://github.com/davidqin/game_campo", target: "_blank"} Source Code
             %ul.nav.pull-right
-              %li.divider-vertical
+              %li
               - if not @current_user
                 %li{class: @request.path == "/account/login" ? "active" : nil}
                   = link_to "/account/login", "Sign In"
@@ -36,14 +43,13 @@
                   = link_to "/account/register", "Sign Up"
               - else
                 %li.dropdown
-                  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                  %a{ :href => "#"}
                     %i.icon-user
                     Account
                     %b.caret
-                  %ul.dropdown-menu
+                  %ul
                     %li
                       %a{:href => "/login/form"} profile
-                    %li.divider
                     %li
                       %a{:href => "/logout"} Logout
     .container.mt10

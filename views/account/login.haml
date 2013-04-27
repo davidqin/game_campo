@@ -1,14 +1,15 @@
-.row
-  %form.form-horizontal.box{method: :post}
-    .control-group
-      %label.control-label{:for => "inputEmail"} Email
-      .controls
-        %input#email{:name => "user[email]", :placeholder => "Email", :type => "text"}/
-    .control-group
-      %label.control-label{:for => "inputPassword"} Password
-      .controls
-        %input#password{:name => "user[password]", :placeholder => "Password", :type => "password"}/
-    .control-group
-      .form-actions
-        %button.btn.btn-primary{:type => "submit"} Save changes
-        %button.btn{:type => "button"} Cancel
+.login
+  .login-screen
+    .login-icon
+      %img{ src: "/assets/welcome.png", alt: "Welcome to App"}
+      %h4
+        %small Welcome
+    %form.login-form{method: :post}
+      .control-group
+        %input.login-field#login-name{ type: "text", name: "user[email]", placeholder: "Enter your email"}
+        %label.login-field-icon.fui-man-16{ for: "login-name"}
+      .control-group
+        %input.login-field#login-pass{ type: "password", name: "user[password]", placeholder: "Password"}
+        %label.login-field-icon.fui-lock-16{ for: "login-pass"}
+      %button.btn.btn-primary.btn-large.btn-block{type: :submit} Login
+      %a.login-link{ href: "#" } Lost your password?

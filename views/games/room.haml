@@ -2,17 +2,23 @@
 %link{:href => "/assets/#{@game.style_name}.css", :rel => "stylesheet"}/
 .row-fluid{class: @game.style_name}
   .span4
-    #buttons.well
-      %button.btn.btn-success.btn-block#ready READY
-      %button.btn.btn-warning.btn-block#cancel_ready CANCEL READY
-    .well
-      %form.form-inline#chat
-        %input.span9{type: :text, placeholder: :message}
-        %button.btn{type: :submit} Send
-    #player1.player.well{"data-player" => "player1"}
-    #player2.player.well{"data-player" => "player2"}
-
-    #watchers
-    .well
-      %a.btn.btn-danger.btn-block{href: "/games/#{@game.path}"} BACK TO HALL
+    .todo
+      %ul
+        %li
+          .todo-icon.fui-new-24
+          .todo-content
+            %form.form-inline#chat
+              %input.span7{type: :text, placeholder: :message, maxlength: 50}
+              %button.btn.btn-info{type: :submit} Send
+        %li#player1.player{"data-player" => "player1"}
+        %li#player2.player{"data-player" => "player2"}
+        %li
+          .todo-icon.fui-settings-24
+          .todo-content
+            %button.btn.btn-large.btn-success.btn-block#ready READY
+            %button.btn.btn-large.btn-warning.btn-block#cancel_ready CANCEL READY
+        %li
+          .todo-icon.fui-settings-24
+          .todo-content
+            %a.btn.btn-danger.btn-large.btn-block{href: "/games/#{@game.path}"} BACK TO HALL
   #game_pool.span8

@@ -86,17 +86,17 @@ class PlayersController extends Spine.Controller
     player = @["player#{position}El"]
 
     clear_popover = =>
-      player.find('img').popover('destroy')
+      player.find('img').tooltip('destroy')
       clearTimeout(player.data("time-out"))
 
     clear_popover()
 
-    player.find('img').popover
+    player.find('img').tooltip
       trigger: "manual"
-      content: options.message
+      title: options.message
       placement: 'bottom'
 
-    player.find('img').popover("show")
+    player.find('img').tooltip("show")
     player.data "time-out", (setTimeout clear_popover, 3000)
 
   add_player: (options) =>

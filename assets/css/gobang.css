@@ -37,8 +37,14 @@
 }
 
 form#chat {
-  margin-bottom: 0;
+  margin-top: 5px;
+  margin-bottom: 0px;
 }
+
+form#chat input{
+  width: 170px;
+}
+
 
 .gobang .status {
   margin-top: 15px;
