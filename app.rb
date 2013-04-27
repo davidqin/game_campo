@@ -25,6 +25,7 @@ get '/games/:game_type' do
     haml :'/games/hall'
   else
     request.websocket do |websocket|
+      game_engin.hall_handle @current_user, websocket, params[:custom_string]
     end
   end
 end
@@ -35,7 +36,7 @@ get '/games/:game_type/:custom_string' do
     haml :'/games/room'
   else
     request.websocket do |websocket|
-      game_engin.handle @current_user, websocket, params[:custom_string]
+      game_engin.game_handle @current_user, websocket, params[:custom_string]
     end
   end
 end

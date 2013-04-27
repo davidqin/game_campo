@@ -1745,11 +1745,9 @@ textarea,
 
 .tile-image {
   height: 100px;
-  margin: 31px 0 27px;
   vertical-align: bottom; }
   .tile-image.big-illustration {
     height: 111px;
-    margin-top: 20px;
     width: 112px; }
 
 .tile-title {

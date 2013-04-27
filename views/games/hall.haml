@@ -1,15 +1,17 @@
+%script{:src => "/assets/controllers/#{@game.style_name}_hall_controller.js", :type => "text/javascript"}
+
 .hero-unit
   %h1= @game.name
   %p= @game.description
   %p
     %a.btn.btn-primary.btn-large Learn more
 
-.row
+.row#games
   - @game.rooms.each_slice(4) do |rooms|
     - rooms.each do |room|
-      .span3.mb30
+      .span3.mb30{"data-game-id" => "#{@game.path}-#{room.number}"}
         .tile
-          %h3.mt20.tile-title Web Oriented
-          %img.tile-image.big-illustration{:alt => "", :src => ""}/
-          %h3.tile-title Web Oriented
+          %h3.mt20.tile-title.player1 Empty
+          %img.tile-image.big-illustration{:title => "waiting", :src => "/assets/waiting.png"}/
+          %h3.tile-title.player2 Empty
           %a.btn.btn-primary.btn-large.btn-block{:href => "#{@game.path}/#{room.number}"} Join

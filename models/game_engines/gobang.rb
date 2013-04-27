@@ -2,10 +2,47 @@ class Gobang
 
   Perfix = "gobang-"
 
-  @@games = {}
+  @@game_rooms = {}
+
+  class Hall
+    attr_accessor :id, :players
+
+    def initialize id
+      self.id = id
+      self.players = []
+    end
+
+    def enter player
+      self.players << player
+    end
+
+    def left player
+      self.players.delete player
+    end
+
+    def broadcast msg_hash
+      EM.next_tick do
+        players.each { |player| player.send(msg_hash) }
+      end
+    end
+  end
 
   class << self
-    def handle user, websocket, custom_string
+
+    def hall_handle user, websocket, custom_string
+      player = Player.new(user, websocket)
+      hall = game_hall
+
+      websocket.onopen do
+        hall.enter(player)
+      end
+
+      websocket.onclose do
+        hall.left(player)
+      end
+    end
+
+    def game_handle user, websocket, custom_string
       player = Player.new(user, websocket)
       game   = find_or_create(Gobang::Perfix + custom_string)
 
@@ -36,15 +73,17 @@ class Gobang
         websocket.send JSON(type: :error, message: "You are already in this room somewhere else, the websocket is closing.")
         EM.add_timer(5) { websocket.close_connection }
       end
+    end
 
-      websocket.onclose do; end
+    def game_hall
+      @@game_hall ||= Hall.new(Perfix + "hall")
     end
 
     def find_or_create id
-      if @@games[id]
-        @@games[id]
+      if @@game_rooms[id]
+        @@game_rooms[id]
       else
-        @@games[id] = new(id)
+        @@game_rooms[id] = new(id)
       end
     end
   end
@@ -54,6 +93,10 @@ class Gobang
   def initialize id
     self.id          = id
     self.watchers    = []
+  end
+
+  def game_hall
+    self.class.game_hall
   end
 
   def has_player? player
@@ -90,10 +133,12 @@ class Gobang
       player.position = 1
       self.player1 = player
       broadcast type: :add_player, player: player.to_params
+      hall_broadcast type: :a_player_enter_a_game, game_id: self.id, player: player.to_params
     when :player2
       player.position = 2
       self.player2 = player
       broadcast type: :add_player, player: player.to_params
+      hall_broadcast type: :a_player_enter_a_game, game_id: self.id, player: player.to_params
     when :watcher
       player.position = -1
       self.watchers << player
@@ -105,6 +150,7 @@ class Gobang
     if self.player1 == player
       self.player1 = nil
       broadcast type: :remove_player, player: player.to_params
+      hall_broadcast type: :a_player_left_a_game, game_id: self.id, player: player.to_params
       game_over player2, "#{player.email} LEFT the Room!" if self.is_start
       return
     end
@@ -112,6 +158,7 @@ class Gobang
     if self.player2 == player
       self.player2 = nil
       broadcast type: :remove_player, player: player.to_params
+      hall_broadcast type: :a_player_left_a_game, game_id: self.id, player: player.to_params
       game_over player1, "#{player.email} LEFT the Room!" if self.is_start
       return
     end
@@ -201,6 +248,7 @@ class Gobang
     broadcast type: :game_start
     reset_time_left
     broadcast_turn
+    hall_broadcast type: :a_game_start, game_id: self.id
     puts "#{id} begin!"
   end
 
@@ -228,6 +276,8 @@ class Gobang
     self.is_start = false
 
     broadcast_players_status
+
+    hall_broadcast type: :a_game_over, game_id: self.id
   end
 
   def chess_board_reset
@@ -257,6 +307,10 @@ class Gobang
       player2.send(msg_hash) if player2
       watchers.each { |watcher| watcher.send(msg_hash) }
     end
+  end
+
+  def hall_broadcast msg_hash
+    game_hall.broadcast msg_hash
   end
 
   def broadcast_watchers msg_hash

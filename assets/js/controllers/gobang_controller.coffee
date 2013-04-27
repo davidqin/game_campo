@@ -101,4 +101,4 @@ class GobangController extends Spine.Controller
     html += "</table></div>"
     @game_poolEl.html(html).show()
 
-@GC.controllers.GobangController = GobangController
+$ -> new GobangController(el: $('body'))
