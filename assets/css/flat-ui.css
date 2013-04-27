@@ -182,10 +182,10 @@ body {
 a {
   color: #1abc9c;
   text-decoration: underline;
-  -webkit-transition: 0.25s;
-  -moz-transition: 0.25s;
-  -o-transition: 0.25s;
-  transition: 0.25s;
+  /*-webkit-transition: 0.25s;*/
+  /*-moz-transition: 0.25s;*/
+  /*-o-transition: 0.25s;*/
+  /*transition: 0.25s;*/
   -webkit-backface-visibility: hidden; }
   a:hover {
     color: #2ecc71;
@@ -553,6 +553,10 @@ h6 {
       z-index: 100;
       -webkit-transform: scale(1, 1);
       visibility: visible;
+      -webkit-transition: 0.3s ease-out;
+      -moz-transition: 0.3s ease-out;
+      -o-transition: 0.3s ease-out;
+      transition: 0.3s ease-out;
       display: block\9; }
   .navbar .nav ul {
     border-radius: 4px;
@@ -568,10 +572,6 @@ h6 {
     -webkit-transform-origin: 0 0;
     visibility: hidden;
     display: none\9;
-    -webkit-transition: 0.3s ease-out;
-    -moz-transition: 0.3s ease-out;
-    -o-transition: 0.3s ease-out;
-    transition: 0.3s ease-out;
     -webkit-backface-visibility: hidden; }
     .navbar .nav ul ul {
       left: 95%;

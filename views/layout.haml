@@ -21,10 +21,9 @@
                 %a{:href => "/"}
                   GameCampo
                   %span.navbar-unread 1
-              %li.dropdown
+              %li
                 %a{:href => "#"}
                   Games List
-                  %b.caret
                   %span.navbar-unread 1
                 %ul
                   %li
@@ -42,10 +41,9 @@
                 %li{class: @request.path == "/account/register" ? "active" : nil}
                   = link_to "/account/register", "Sign Up"
               - else
-                %li.dropdown
+                %li
                   %a{ :href => "#"}
                     Account
-                    %b.caret
                   %ul
                     %li
                       %a{:href => "/login/form"} profile
