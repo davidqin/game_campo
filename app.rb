@@ -22,7 +22,7 @@ end
 get '/games/:game_type' do
   if not request.websocket?
     @game = Game.find_by_path!(params[:game_type])
-    haml :'/games/hall'
+    haml "/games/#{@game.path}".to_sym
   else
     request.websocket do |websocket|
       game_engin.hall_handle @current_user, websocket, params[:custom_string]
